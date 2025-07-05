@@ -1,0 +1,326 @@
+@import "tailwindcss" layer(base);
+@import "tailwindcss/utilities" layer(utilities);
+
+@layer theme {
+  :root {
+    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(0 0% 3.9%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(0 0% 3.9%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(0 0% 3.9%);
+    --primary: hsl(0 0% 9%);
+    --primary-foreground: hsl(0 0% 98%);
+    --secondary: hsl(0 0% 96.1%);
+    --secondary-foreground: hsl(0 0% 9%);
+    --muted: hsl(0 0% 96.1%);
+    --muted-foreground: hsl(0 0% 45.1%);
+    --accent: hsl(0 0% 96.1%);
+    --accent-foreground: hsl(0 0% 9%);
+    --destructive: hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --input: hsl(0 0% 89.8%);
+    --ring: hsl(0 0% 3.9%);
+    --color-chart-1: hsl(12 76% 61%);
+    --color-chart-2: hsl(173 58% 39%);
+    --color-chart-3: hsl(197 37% 24%);
+    --color-chart-4: hsl(43 74% 66%);
+    --color-chart-5: hsl(27 87% 67%);
+
+    --radius-sm: 0.125rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+
+    --color-sidebar-background: hsl(0 0% 98%);
+    --color-sidebar-foreground: hsl(240 5.3% 26.1%);
+    --color-sidebar-primary: hsl(240 5.9% 10%);
+    --color-sidebar-primary-foreground: hsl(0 0% 98%);
+    --color-sidebar-accent: hsl(240 4.8% 95.9%);
+    --color-sidebar-accent-foreground: hsl(240 5.9% 10%);
+    --color-sidebar-border: hsl(220 13% 91%);
+    --color-sidebar-ring: hsl(217.2 91.2% 59.8%);
+  }
+
+  .dark {
+    --background: hsl(0 0% 3.9%);
+    --foreground: hsl(0 0% 98%);
+    --card: hsl(0 0% 3.9%);
+    --card-foreground: hsl(0 0% 98%);
+    --popover: hsl(0 0% 3.9%);
+    --popover-foreground: hsl(0 0% 98%);
+    --primary: hsl(0 0% 98%);
+    --primary-foreground: hsl(0 0% 9%);
+    --secondary: hsl(0 0% 14.9%);
+    --secondary-foreground: hsl(0 0% 98%);
+    --muted: hsl(0 0% 14.9%);
+    --muted-foreground: hsl(0 0% 63.9%);
+    --accent: hsl(0 0% 14.9%);
+    --accent-foreground: hsl(0 0% 98%);
+    --destructive: hsl(0 62.8% 30.6%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --border: hsl(0 0% 14.9%);
+    --input: hsl(0 0% 14.9%);
+    --ring: hsl(0 0% 83.1%);
+    --color-chart-1: hsl(220 70% 50%);
+    --color-chart-2: hsl(160 60% 45%);
+    --color-chart-3: hsl(30 80% 55%);
+    --color-chart-4: hsl(280 65% 60%);
+    --color-chart-5: hsl(340 75% 55%);
+    --color-sidebar-background: hsl(240 5.9% 10%);
+    --color-sidebar-foreground: hsl(240 4.8% 95.9%);
+    --color-sidebar-primary: hsl(224.3 76.3% 48%);
+    --color-sidebar-primary-foreground: hsl(0 0% 100%);
+    --color-sidebar-accent: hsl(240 3.7% 15.9%);
+    --color-sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+    --color-sidebar-border: hsl(240 3.7% 15.9%);
+    --color-sidebar-ring: hsl(217.2 91.2% 59.8%);
+  }
+}
+
+@layer base {
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom Wallet Dropdown Styles */
+.wallet-adapter-dropdown {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  padding: 0.75rem !important;
+  min-width: 240px !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.wallet-adapter-dropdown-list {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.wallet-adapter-dropdown-list-item {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.75rem !important;
+  margin: 0.25rem 0 !important;
+  color: hsl(var(--foreground)) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.wallet-adapter-dropdown-list-item:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  transform: translateY(-1px) !important;
+}
+
+.wallet-adapter-dropdown-list-item:active {
+  transform: translateY(0) !important;
+}
+
+/* Wallet button styling */
+.wallet-adapter-button {
+  background: hsl(var(--primary)) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  color: hsl(var(--primary-foreground)) !important;
+  font-weight: 500 !important;
+  padding: 0.625rem 1rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.wallet-adapter-button:hover {
+  background: hsl(var(--primary)) !important;
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.wallet-adapter-button:active {
+  transform: translateY(0) !important;
+}
+
+.wallet-adapter-button-trigger {
+  background: hsl(var(--primary)) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  color: hsl(var(--primary-foreground)) !important;
+  font-weight: 500 !important;
+  padding: 0.625rem 1rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.wallet-adapter-button-trigger:hover {
+  background: hsl(var(--primary)) !important;
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Wallet modal styling */
+.wallet-adapter-modal {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.wallet-adapter-modal-container {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  padding: 2rem !important;
+  max-width: 400px !important;
+  width: 90% !important;
+}
+
+.wallet-adapter-modal-title {
+  color: var(--color-foreground) !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.wallet-adapter-modal-list {
+  gap: 0.75rem !important;
+}
+
+.wallet-adapter-modal-list-item {
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 1rem !important;
+  padding: 1rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.wallet-adapter-modal-list-item:hover {
+  background: var(--color-accent) !important;
+  border-color: var(--color-primary) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.wallet-adapter-modal-list-item-icon {
+  width: 2rem !important;
+  height: 2rem !important;
+  border-radius: 0.5rem !important;
+}
+
+.wallet-adapter-modal-list-item-name {
+  color: var(--color-foreground) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+}
+
+/* Copy address and other dropdown items */
+.wallet-adapter-dropdown-list-item[role="menuitem"] {
+  border-radius: 0.75rem !important;
+  padding: 0.75rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: var(--color-foreground) !important;
+  transition: all 0.2s ease !important;
+}
+
+.wallet-adapter-dropdown-list-item[role="menuitem"]:hover {
+  background: var(--color-accent) !important;
+  color: var(--color-accent-foreground) !important;
+}
+
+/* Disconnect button styling */
+.wallet-adapter-dropdown-list-item.wallet-adapter-dropdown-list-item-disconnect {
+  color: var(--color-destructive) !important;
+  font-weight: 500 !important;
+}
+
+.wallet-adapter-dropdown-list-item.wallet-adapter-dropdown-list-item-disconnect:hover {
+  background: var(--color-destructive) !important;
+  color: var(--color-destructive-foreground) !important;
+}
+
+/* Force dark mode dropdown background */
+.dark .wallet-dropdown-content {
+  background: rgb(31 41 55) !important;
+  color: white !important;
+}
+
+/* Light mode should stay light */
+.wallet-dropdown-content {
+  background: rgb(255 255 255) !important;
+  color: rgb(17 24 39) !important;
+}
+
+/* More specific selectors to force dark mode */
+.dark [data-radix-popper-content-wrapper] .wallet-dropdown-content {
+  background: rgb(31 41 55) !important;
+  color: white !important;
+}
+
+/* Even more specific to override any conflicting styles */
+html.dark .wallet-dropdown-content {
+  background: rgb(31 41 55) !important;
+  color: white !important;
+}
+
+/* Force all text inside dropdown to be white in dark mode */
+.dark .wallet-dropdown-content * {
+  color: white !important;
+}
+
+.dark .wallet-dropdown-content .text-gray-500,
+.dark .wallet-dropdown-content .text-gray-600,
+.dark .wallet-dropdown-content .text-gray-700,
+.dark .wallet-dropdown-content .text-gray-900 {
+  color: white !important;
+}
+
+/* Specific text elements that need to be white in dark mode */
+.dark .wallet-dropdown-content [data-radix-dropdown-menu-label] {
+  color: rgb(156 163 175) !important;
+}
+
+.dark .wallet-dropdown-content .text-green-600,
+.dark .wallet-dropdown-content .text-green-700 {
+  color: rgb(34 197 94) !important;
+}
+
+/* Remove thick borders from wallet and theme toggle buttons */
+.wallet-button-custom {
+  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+}
+
+.theme-toggle-custom {
+  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+}
+
+.dark .wallet-button-custom {
+  border: 1px solid rgba(107, 114, 128, 0.3) !important;
+}
+
+.dark .theme-toggle-custom {
+  border: 1px solid rgba(107, 114, 128, 0.3) !important;
+}
