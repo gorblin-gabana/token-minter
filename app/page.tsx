@@ -278,7 +278,7 @@ export default function GorbaganaLaunchpad() {
       <main className="w-full max-w-none px-4 py-8">
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:!bg-gradient-to-br dark:!from-blue-900 dark:!to-blue-800 border-0">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -292,7 +292,7 @@ export default function GorbaganaLaunchpad() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:!bg-gradient-to-br dark:!from-purple-900 dark:!to-purple-800 border-0">
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -306,7 +306,7 @@ export default function GorbaganaLaunchpad() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:!bg-gradient-to-br dark:!from-green-900 dark:!to-green-800 border-0">
+          <Card className="bg-gradient-to-br from-green-50 to-green-100  border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -320,7 +320,7 @@ export default function GorbaganaLaunchpad() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:!bg-gradient-to-br dark:!from-orange-900 dark:!to-orange-800 border-0">
+          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -346,7 +346,7 @@ export default function GorbaganaLaunchpad() {
               exit={{ opacity: 0, y: -10 }}
               className="mb-8"
             >
-              <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:!bg-gradient-to-r dark:!from-green-900 dark:!to-emerald-800 border-0">
+              <Card className="bg-gradient-to-r from-green-50 to-emerald-50  border-0">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <CheckCircle className="w-6 h-6 text-green-700" />
@@ -407,7 +407,7 @@ export default function GorbaganaLaunchpad() {
         {/* Main Launchpad */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Token Launch Panel */}
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:!bg-gradient-to-br dark:!from-blue-900 dark:!to-blue-800 border-0">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0">
             <CardHeader className="pb-6">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
@@ -428,7 +428,7 @@ export default function GorbaganaLaunchpad() {
                     placeholder="e.g., Gorb Token"
                     value={tokenForm.name}
                     onChange={(e) => setTokenForm({ ...tokenForm, name: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
+                    className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
                   />
                 </div>
                 <div className="space-y-2">
@@ -438,7 +438,7 @@ export default function GorbaganaLaunchpad() {
                     placeholder="e.g., GORB"
                     value={tokenForm.symbol}
                     onChange={(e) => setTokenForm({ ...tokenForm, symbol: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
+                    className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -450,7 +450,7 @@ export default function GorbaganaLaunchpad() {
                   placeholder="https://example.com/token-image.png"
                   value={tokenForm.uri}
                   onChange={(e) => setTokenForm({ ...tokenForm, uri: e.target.value })}
-                  className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
+                  className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
                 />
               </div>
 
@@ -463,7 +463,7 @@ export default function GorbaganaLaunchpad() {
                     placeholder="1000000"
                     value={tokenForm.supply}
                     onChange={(e) => setTokenForm({ ...tokenForm, supply: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
+                    className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
                   />
                 </div>
                 <div className="space-y-2">
@@ -474,7 +474,7 @@ export default function GorbaganaLaunchpad() {
                     placeholder="9"
                     value={tokenForm.decimals}
                     onChange={(e) => setTokenForm({ ...tokenForm, decimals: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
+                    className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -508,7 +508,7 @@ export default function GorbaganaLaunchpad() {
           </Card>
 
           {/* NFT Launch Panel */}
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:!bg-gradient-to-br dark:!from-purple-900 dark:!to-purple-800 border-0">
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-0">
             <CardHeader className="pb-6">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
@@ -529,7 +529,7 @@ export default function GorbaganaLaunchpad() {
                     placeholder="e.g., Gorb Genesis"
                     value={nftForm.name}
                     onChange={(e) => setNftForm({ ...nftForm, name: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
+                    className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
                   />
                 </div>
                 <div className="space-y-2">
@@ -539,7 +539,7 @@ export default function GorbaganaLaunchpad() {
                     placeholder="e.g., GGEN"
                     value={nftForm.symbol}
                     onChange={(e) => setNftForm({ ...nftForm, symbol: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
+                    className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -551,7 +551,7 @@ export default function GorbaganaLaunchpad() {
                   placeholder="https://example.com/nft-metadata.json"
                   value={nftForm.uri}
                   onChange={(e) => setNftForm({ ...nftForm, uri: e.target.value })}
-                  className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
+                  className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
                 />
               </div>
 
@@ -562,11 +562,11 @@ export default function GorbaganaLaunchpad() {
                   placeholder="Describe your NFT collection..."
                   value={nftForm.description}
                   onChange={(e) => setNftForm({ ...nftForm, description: e.target.value })}
-                  className="rounded-xl border-0 bg-white/50 dark:bg-slate-700/50 focus-visible:ring-2 focus-visible:ring-purple-500 min-h-[100px] resize-none placeholder:text-gray-500 text-gray-900"
+                  className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 min-h-[100px] resize-none placeholder:text-gray-500 text-gray-900"
                 />
               </div>
 
-              <div className="bg-white/30 dark:bg-slate-700/30 p-4 rounded-xl">
+              <div className="bg-white/30 p-4 rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-700">Royalty Fee</p>
@@ -607,7 +607,7 @@ export default function GorbaganaLaunchpad() {
 
         {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:!bg-gradient-to-br dark:!from-green-900 dark:!to-green-800 border-0">
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-0">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
@@ -621,7 +621,7 @@ export default function GorbaganaLaunchpad() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:!bg-gradient-to-br dark:!from-orange-900 dark:!to-orange-800 border-0">
+          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-0">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
@@ -635,7 +635,7 @@ export default function GorbaganaLaunchpad() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:!bg-gradient-to-br dark:!from-blue-900 dark:!to-blue-800 border-0">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
