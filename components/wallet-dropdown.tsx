@@ -72,7 +72,7 @@ export function WalletDropdown() {
       <DropdownMenuTrigger asChild>
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 rounded-2xl wallet-button-custom bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-950/60 dark:hover:to-indigo-950/60 transition-all duration-200 px-4 py-2 h-auto min-h-10"
+          className="flex items-center gap-2 rounded-2xl wallet-button-custom bg-gradient-to-r from-blue-50 to-indigo-50 from-blue-950/40 to-indigo-950/40 hover:from-blue-100 hover:to-indigo-100 hover:from-blue-950/60 dark:hover:to-indigo-950/60 transition-all duration-200 px-4 py-2 h-auto min-h-10"
         >
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
             <Wallet className="w-4 h-4 text-white" />
@@ -90,12 +90,12 @@ export function WalletDropdown() {
       </DropdownMenuTrigger>
       
       <DropdownMenuContent 
-        className="w-80 rounded-2xl border-0 bg-white dark:bg-gray-800 backdrop-blur-xl shadow-2xl p-1 dark:text-white dark:border-gray-700 wallet-dropdown-content" 
+        className="w-80 rounded-2xl border-0 bg-gray-800 backdrop-blur-xl shadow-2xl p-1" 
         align="end"
         sideOffset={8}
       >
                  {/* Wallet Info Header */}
-         <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+         <div className="p-4 border-b text-black border-gray-100 dark:border-gray-700">
            <div className="flex items-center gap-3">
              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
                <Wallet className="w-5 h-5 text-white" />
@@ -208,7 +208,7 @@ export function WalletDropdown() {
          <div className="p-1 space-y-0.5">
            <DropdownMenuItem 
              onClick={copyAddress}
-             className="rounded-xl cursor-pointer flex items-center gap-3 p-3 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 dark:!text-white"
+             className="rounded-xl cursor-pointer flex items-center gap-3 p-3 text-sm font-medium bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:!text-white"
            >
              <Copy className="w-4 h-4" />
              Copy Address
@@ -216,7 +216,7 @@ export function WalletDropdown() {
 
            <DropdownMenuItem 
              onClick={() => window.open(`https://gorbscan.com/address/${publicKey.toBase58()}`, '_blank')}
-             className="rounded-xl cursor-pointer flex items-center gap-3 p-3 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 dark:!text-white"
+             className="rounded-xl cursor-pointer flex items-center gap-3 p-3 text-black text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 dark:!text-white"
            >
              <ExternalLink className="w-4 h-4" />
              View on GorbScan

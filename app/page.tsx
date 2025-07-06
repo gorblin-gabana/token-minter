@@ -251,7 +251,7 @@ export default function GorbaganaLaunchpad() {
                   width={40}
                   height={40}
                   className="object-cover w-full h-full rounded-lg"
-                  onError={(e) => {
+                  onError={(e:any) => {
                     e.currentTarget.src = "/goblin-mascot.png"
                   }}
                 />
