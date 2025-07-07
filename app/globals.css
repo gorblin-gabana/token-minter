@@ -3,9 +3,11 @@
 
 @layer theme {
   :root {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
 
     --background: hsl(0 0% 100%);
     --foreground: hsl(0 0% 3.9%);
@@ -105,19 +107,22 @@
   background: hsl(var(--card)) !important;
   border: 1px solid hsl(var(--border)) !important;
   border-radius: 1rem !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   padding: 0.75rem !important;
   min-width: 240px !important;
   backdrop-filter: blur(10px) !important;
 }
 
 .wallet-adapter-dropdown-list {
+  color: white;
   margin: 0 !important;
   padding: 0 !important;
 }
 
 .wallet-adapter-dropdown-list-item {
   background: transparent !important;
+  background-color: red !important;
   border: none !important;
   border-radius: 0.75rem !important;
   padding: 0.75rem !important;
@@ -141,6 +146,13 @@
   transform: translateY(0) !important;
 }
 
+.wallet-adapter-modal-overlay {
+  z-index: -10;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
 /* Wallet button styling */
 .wallet-adapter-button {
   background: hsl(var(--primary)) !important;
@@ -157,7 +169,8 @@
   background: hsl(var(--primary)) !important;
   opacity: 0.9 !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 .wallet-adapter-button:active {
@@ -179,7 +192,8 @@
   background: hsl(var(--primary)) !important;
   opacity: 0.9 !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Wallet modal styling */
@@ -189,6 +203,13 @@
 }
 
 .wallet-adapter-modal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
   background: hsl(var(--card)) !important;
   border: 1px solid hsl(var(--border)) !important;
   border-radius: 1.5rem !important;
@@ -197,9 +218,11 @@
   max-width: 400px !important;
   width: 90% !important;
 }
-
 .wallet-adapter-modal-title {
-  color: var(--color-foreground) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  color: white !important;
   font-size: 1.5rem !important;
   font-weight: 600 !important;
   margin-bottom: 1.5rem !important;
@@ -207,10 +230,11 @@
 
 .wallet-adapter-modal-list {
   gap: 0.75rem !important;
+  color: white;
 }
 
 .wallet-adapter-modal-list-item {
-  background: var(--color-card) !important;
+  background: white !important;
   border: 1px solid var(--color-border) !important;
   border-radius: 1rem !important;
   padding: 1rem !important;
@@ -221,7 +245,8 @@
   background: var(--color-accent) !important;
   border-color: var(--color-primary) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 .wallet-adapter-modal-list-item-icon {
@@ -231,7 +256,7 @@
 }
 
 .wallet-adapter-modal-list-item-name {
-  color: var(--color-foreground) !important;
+  color: white !important;
   font-weight: 500 !important;
   font-size: 0.875rem !important;
 }
@@ -242,13 +267,13 @@
   padding: 0.75rem !important;
   font-size: 0.875rem !important;
   font-weight: 500 !important;
-  color: var(--color-foreground) !important;
+  color: white !important;
   transition: all 0.2s ease !important;
 }
 
 .wallet-adapter-dropdown-list-item[role="menuitem"]:hover {
-  background: var(--color-accent) !important;
-  color: var(--color-accent-foreground) !important;
+  background: white !important;
+  color: white !important;
 }
 
 /* Disconnect button styling */
