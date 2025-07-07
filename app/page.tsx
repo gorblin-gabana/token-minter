@@ -53,7 +53,9 @@ export default function GorbaganaLaunchpad() {
     supply: "",
     decimals: "9",
     uri: "",
+    freezeAuthority: "",
   })
+  const [tokenFreezeAuthorityError, setTokenFreezeAuthorityError] = useState<string | null>(null)
 
   // NFT form state
   const [nftForm, setNftForm] = useState({
@@ -61,7 +63,9 @@ export default function GorbaganaLaunchpad() {
     symbol: "",
     uri: "",
     description: "",
+    freezeAuthority: "",
   })
+  const [freezeAuthorityError, setFreezeAuthorityError] = useState<string | null>(null)
 
   // Transaction results
   const [lastTransaction, setLastTransaction] = useState<{
@@ -75,6 +79,7 @@ export default function GorbaganaLaunchpad() {
   }, [])
 
   const handleTokenLaunch = async () => {
+    setTokenFreezeAuthorityError(null)
     if (!tokenForm.name || !tokenForm.symbol || !tokenForm.supply) {
       toast({
         title: "Missing Fields",
@@ -82,6 +87,22 @@ export default function GorbaganaLaunchpad() {
         variant: "destructive",
       })
       return
+    }
+
+    // Validate freeze authority if provided
+    let freezeAuthorityPubkey: import("@solana/web3.js").PublicKey | null = null
+    if (tokenForm.freezeAuthority) {
+      try {
+        freezeAuthorityPubkey = new (await import("@solana/web3.js")).PublicKey(tokenForm.freezeAuthority)
+      } catch (e) {
+        setTokenFreezeAuthorityError("Invalid Solana public key format")
+        toast({
+          title: "Invalid Freeze Authority",
+          description: "Freeze authority must be a valid Solana public key.",
+          variant: "destructive",
+        })
+        return
+      }
     }
 
     if (!connected || !wallet) {
@@ -103,6 +124,7 @@ export default function GorbaganaLaunchpad() {
         supply: tokenForm.supply,
         decimals: Number.parseInt(tokenForm.decimals),
         uri: tokenForm.uri,
+        freezeAuth: freezeAuthorityPubkey ? freezeAuthorityPubkey : null,
       })
 
       setLastTransaction({
@@ -116,7 +138,7 @@ export default function GorbaganaLaunchpad() {
         description: `${tokenForm.name} (${tokenForm.symbol}) has been created on Gorbchain!`,
       })
 
-      setTokenForm({ name: "", symbol: "", supply: "", decimals: "9", uri: "" })
+      setTokenForm({ name: "", symbol: "", supply: "", decimals: "9", uri: "", freezeAuthority: "" })
     } catch (error) {
       console.error("Token launch error:", error)
       
@@ -151,6 +173,7 @@ export default function GorbaganaLaunchpad() {
   }
 
   const handleNFTLaunch = async () => {
+    setFreezeAuthorityError(null)
     if (!nftForm.name || !nftForm.symbol || !nftForm.uri || !nftForm.description) {
       toast({
         title: "Missing Fields",
@@ -158,6 +181,22 @@ export default function GorbaganaLaunchpad() {
         variant: "destructive",
       })
       return
+    }
+
+    // Validate freeze authority if provided
+    let freezeAuthorityPubkey: import("@solana/web3.js").PublicKey | null = null
+    if (nftForm.freezeAuthority) {
+      try {
+        freezeAuthorityPubkey = new (await import("@solana/web3.js")).PublicKey(nftForm.freezeAuthority)
+      } catch (e) {
+        setFreezeAuthorityError("Invalid Solana public key format")
+        toast({
+          title: "Invalid Freeze Authority",
+          description: "Freeze authority must be a valid Solana public key.",
+          variant: "destructive",
+        })
+        return
+      }
     }
 
     if (!connected || !wallet) {
@@ -178,6 +217,7 @@ export default function GorbaganaLaunchpad() {
         symbol: nftForm.symbol,
         uri: nftForm.uri,
         description: nftForm.description,
+        freezeAuth: freezeAuthorityPubkey ? freezeAuthorityPubkey : null,
       })
 
       setLastTransaction({
@@ -191,7 +231,7 @@ export default function GorbaganaLaunchpad() {
         description: `${nftForm.name} NFT has been created on Gorbchain!`,
       })
 
-      setNftForm({ name: "", symbol: "", uri: "", description: "" })
+      setNftForm({ name: "", symbol: "", uri: "", description: "", freezeAuthority: "" })
     } catch (error) {
       console.error("NFT mint error:", error)
       
@@ -479,6 +519,24 @@ export default function GorbaganaLaunchpad() {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="token-freeze" className="text-sm font-medium text-gray-700">Freeze Authority (optional)</Label>
+                <Input
+                  id="token-freeze"
+                  placeholder="Solana public key (optional)"
+                  value={tokenForm.freezeAuthority}
+                  onChange={(e) => {
+                    setTokenForm({ ...tokenForm, freezeAuthority: e.target.value })
+                    setTokenFreezeAuthorityError(null)
+                  }}
+                  className={`rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 ${tokenFreezeAuthorityError ? 'ring-2 ring-red-500' : ''}`}
+                />
+                {tokenFreezeAuthorityError && (
+                  <p className="text-xs text-red-600 mt-1">{tokenFreezeAuthorityError}</p>
+                )}
+                <p className="text-xs text-gray-500">If provided, must be a valid Solana public key. Leave blank to disable freeze authority.</p>
+              </div>
+
               <Button
                 onClick={handleTokenLaunch}
                 disabled={!connected || isLoading}
@@ -564,6 +622,24 @@ export default function GorbaganaLaunchpad() {
                   onChange={(e) => setNftForm({ ...nftForm, description: e.target.value })}
                   className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 min-h-[100px] resize-none placeholder:text-gray-500 text-gray-900"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="nft-freeze" className="text-sm font-medium text-gray-700">Freeze Authority (optional)</Label>
+                <Input
+                  id="nft-freeze"
+                  placeholder="Solana public key (optional)"
+                  value={nftForm.freezeAuthority}
+                  onChange={(e) => {
+                    setNftForm({ ...nftForm, freezeAuthority: e.target.value })
+                    setFreezeAuthorityError(null)
+                  }}
+                  className={`rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900 ${freezeAuthorityError ? 'ring-2 ring-red-500' : ''}`}
+                />
+                {freezeAuthorityError && (
+                  <p className="text-xs text-red-600 mt-1">{freezeAuthorityError}</p>
+                )}
+                <p className="text-xs text-gray-500">If provided, must be a valid Solana public key. Leave blank to disable freeze authority.</p>
               </div>
 
               <div className="bg-white/30 p-4 rounded-xl">

@@ -70,6 +70,7 @@ export async function mintGorbToken({
   supply,
   decimals,
   uri,
+  freezeAuth = null,
 }: {
   connection: Connection;
   wallet: any; // Wallet adapter (adapter, not context)
@@ -78,6 +79,7 @@ export async function mintGorbToken({
   supply: string | number;
   decimals: string | number;
   uri: string;
+  freezeAuth: PublicKey | null;
 }) {
   console.log("[mintGorbToken] Starting token mint process...");
   console.log("Params:", { name, symbol, supply, decimals, uri });
@@ -116,7 +118,7 @@ export async function mintGorbToken({
       mint,
       Number(decimals),
       payer.publicKey,
-      payer.publicKey,
+      freezeAuth ? freezeAuth : null,
       TOKEN22_PROGRAM
     )
   );
@@ -336,7 +338,7 @@ export async function mintGorbNFT({
 
     console.log("✅ NFT created successfully!");
     console.log("📝 Transaction signature:", createResult.signature);
-    const signature = bs58.encode(createResult.signature)
+    const signature = bs58.encode(createResult.signature);
 
     // 7. Generate explorer links
     const explorerLink = `https://explorer.gorbchain.xyz/address/${asset.publicKey}`;
@@ -410,6 +412,7 @@ export async function mintGorbNFTToken22({
   symbol,
   uri,
   description,
+  freezeAuth = null,
 }: {
   connection: Connection;
   wallet: any;
@@ -417,10 +420,11 @@ export async function mintGorbNFTToken22({
   symbol: string;
   uri: string;
   description: string;
+  freezeAuth: PublicKey | null;
 }) {
   try {
     console.log("🚀 Creating NFT using Token22 on Gorbchain...");
-    
+
     if (!wallet.publicKey || !wallet.signTransaction) {
       throw new Error("Wallet not connected");
     }
@@ -428,14 +432,15 @@ export async function mintGorbNFTToken22({
     const payer = wallet;
     const mintKeypair = Keypair.generate();
     const mint = mintKeypair.publicKey;
-    
+
     // NFTs have supply of 1 and 0 decimals
     const supply = 1;
     const decimals = 0;
-    
+
     const extensions = [ExtensionType.MetadataPointer];
     const mintLen = getMintLen(extensions);
-    const rentExemptionAmount = await connection.getMinimumBalanceForRentExemption(mintLen);
+    const rentExemptionAmount =
+      await connection.getMinimumBalanceForRentExemption(mintLen);
 
     console.log("📋 NFT Details:");
     console.log("  Name:", name);
@@ -463,7 +468,7 @@ export async function mintGorbNFTToken22({
         mint,
         decimals,
         payer.publicKey,
-        payer.publicKey, // freeze authority (can be null for NFTs)
+        freezeAuth ? freezeAuth : null,
         TOKEN22_PROGRAM
       )
     );
@@ -472,7 +477,7 @@ export async function mintGorbNFTToken22({
     const { blockhash } = await connection.getLatestBlockhash();
     createAndInitializeTx.recentBlockhash = blockhash;
     createAndInitializeTx.partialSign(mintKeypair);
-    
+
     const signedTx = await wallet.signTransaction(createAndInitializeTx);
     const createMintSignature = await connection.sendRawTransaction(
       signedTx.serialize(),
@@ -484,12 +489,15 @@ export async function mintGorbNFTToken22({
     // 2. Initialize metadata
     const metadataSpace = calculateMetadataSpace(name, symbol, uri);
     const accountInfo = await connection.getAccountInfo(mint);
-    
+
     if (accountInfo) {
       const newSize = accountInfo.data.length + metadataSpace;
-      const additionalRent = (await connection.getMinimumBalanceForRentExemption(newSize)) - 
-                            (await connection.getMinimumBalanceForRentExemption(accountInfo.data.length));
-      
+      const additionalRent =
+        (await connection.getMinimumBalanceForRentExemption(newSize)) -
+        (await connection.getMinimumBalanceForRentExemption(
+          accountInfo.data.length
+        ));
+
       if (additionalRent > 0) {
         const transferIx = SystemProgram.transfer({
           fromPubkey: payer.publicKey,
@@ -501,7 +509,10 @@ export async function mintGorbNFTToken22({
         const { blockhash: blockhash2 } = await connection.getLatestBlockhash();
         transferTx.recentBlockhash = blockhash2;
         const signedTx2 = await wallet.signTransaction(transferTx);
-        const sig2 = await connection.sendRawTransaction(signedTx2.serialize(), { skipPreflight: true });
+        const sig2 = await connection.sendRawTransaction(
+          signedTx2.serialize(),
+          { skipPreflight: true }
+        );
         await connection.confirmTransaction(sig2, "confirmed");
       }
 
@@ -521,7 +532,10 @@ export async function mintGorbNFTToken22({
       const { blockhash: blockhash3 } = await connection.getLatestBlockhash();
       metadataTx.recentBlockhash = blockhash3;
       const signedTx3 = await wallet.signTransaction(metadataTx);
-      const metadataSig = await connection.sendRawTransaction(signedTx3.serialize(), { skipPreflight: true });
+      const metadataSig = await connection.sendRawTransaction(
+        signedTx3.serialize(),
+        { skipPreflight: true }
+      );
       await connection.confirmTransaction(metadataSig, "confirmed");
       console.log("✅ NFT metadata initialized! Signature:", metadataSig);
     }
@@ -537,7 +551,7 @@ export async function mintGorbNFTToken22({
 
     const ataInfo = await connection.getAccountInfo(associatedToken);
     const mintInstructions: any[] = [];
-    
+
     if (!ataInfo) {
       mintInstructions.push(
         createAssociatedTokenAccountInstruction(
@@ -589,7 +603,6 @@ export async function mintGorbNFTToken22({
       metadataUri: uri,
       success: true,
     };
-
   } catch (error: any) {
     console.error("❌ Error creating NFT with Token22:", error);
     throw error;
@@ -612,8 +625,10 @@ export async function mintGorbNFTToken22SingleTx({
   description: string;
 }) {
   try {
-    console.log("🚀 Creating NFT using Token22 (Single Transaction) on Gorbchain...");
-    
+    console.log(
+      "🚀 Creating NFT using Token22 (Single Transaction) on Gorbchain..."
+    );
+
     if (!wallet.publicKey || !wallet.signTransaction) {
       throw new Error("Wallet not connected");
     }
@@ -621,11 +636,11 @@ export async function mintGorbNFTToken22SingleTx({
     const payer = wallet;
     const mintKeypair = Keypair.generate();
     const mint = mintKeypair.publicKey;
-    
+
     // NFTs have supply of 1 and 0 decimals
     const supply = 1;
     const decimals = 0;
-    
+
     console.log("📋 NFT Details:");
     console.log("  Name:", name);
     console.log("  Symbol:", symbol);
@@ -637,15 +652,23 @@ export async function mintGorbNFTToken22SingleTx({
     const extensions = [ExtensionType.MetadataPointer];
     const mintLen = getMintLen(extensions);
     const metadataSpace = calculateMetadataSpace(name, symbol, uri);
-    const mintRent = await connection.getMinimumBalanceForRentExemption(mintLen);
+    const mintRent = await connection.getMinimumBalanceForRentExemption(
+      mintLen
+    );
     const totalSpace = mintLen + metadataSpace;
-    const totalRent = await connection.getMinimumBalanceForRentExemption(totalSpace);
+    const totalRent = await connection.getMinimumBalanceForRentExemption(
+      totalSpace
+    );
     const additionalRent = totalRent - mintRent;
 
     console.log("💰 Mint space needed:", mintLen, "bytes");
     console.log("💰 Metadata space needed:", metadataSpace, "bytes");
     console.log("💰 Mint rent needed:", mintRent / 1e9, "SOL");
-    console.log("💰 Additional rent for metadata:", additionalRent / 1e9, "SOL");
+    console.log(
+      "💰 Additional rent for metadata:",
+      additionalRent / 1e9,
+      "SOL"
+    );
 
     // Get associated token account
     const associatedToken = getAssociatedTokenAddressSync(
@@ -658,7 +681,7 @@ export async function mintGorbNFTToken22SingleTx({
 
     // Check if ATA already exists
     const ataInfo = await connection.getAccountInfo(associatedToken);
-    
+
     // Build all instructions in one transaction (following working pattern)
     const allInstructions: any[] = [];
 
@@ -750,45 +773,61 @@ export async function mintGorbNFTToken22SingleTx({
     completeTx.feePayer = payer.publicKey;
     const { blockhash } = await connection.getLatestBlockhash();
     completeTx.recentBlockhash = blockhash;
-    
+
     // Sign with mint keypair
     completeTx.partialSign(mintKeypair);
-    
+
     // SIMULATE TRANSACTION FIRST
     console.log("🧪 Running detailed simulation before sending...");
-    const simulationResult = await simulateTransactionDetailed(connection, completeTx, wallet);
-    
+    const simulationResult = await simulateTransactionDetailed(
+      connection,
+      completeTx,
+      wallet
+    );
+
     if (!simulationResult.success) {
       console.log("❌ SIMULATION FAILED - NOT SENDING TRANSACTION");
-      throw new Error(`Transaction simulation failed: ${JSON.stringify(simulationResult.error)}`);
+      throw new Error(
+        `Transaction simulation failed: ${JSON.stringify(
+          simulationResult.error
+        )}`
+      );
     }
-    
+
     // Sign with wallet
     const signedTx = await wallet.signTransaction(completeTx);
-    
-    console.log("📦 Sending single transaction with", allInstructions.length, "instructions...");
-    
+
+    console.log(
+      "📦 Sending single transaction with",
+      allInstructions.length,
+      "instructions..."
+    );
+
     // Send transaction
     const signature = await connection.sendRawTransaction(
       signedTx.serialize(),
-      { 
+      {
         skipPreflight: false, // Don't skip preflight since we already simulated
-        maxRetries: 3
+        maxRetries: 3,
       }
     );
-    
+
     console.log("📤 Transaction sent! Signature:", signature);
     console.log("⏳ Waiting for confirmation...");
-    
+
     // Check transaction status properly
     const statusResult = await checkTransactionStatus(connection, signature);
-    
+
     if (!statusResult.success) {
       console.log("❌ TRANSACTION FAILED AFTER SENDING");
-      throw new Error(`Transaction failed: ${JSON.stringify(statusResult.error)}`);
+      throw new Error(
+        `Transaction failed: ${JSON.stringify(statusResult.error)}`
+      );
     }
 
-    console.log("🎉 SUCCESS! Your NFT has been created in ONE transaction on Gorbchain!");
+    console.log(
+      "🎉 SUCCESS! Your NFT has been created in ONE transaction on Gorbchain!"
+    );
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log("📍 NFT Address:", mint.toBase58());
     console.log("🏷️ Name:", name);
@@ -807,7 +846,6 @@ export async function mintGorbNFTToken22SingleTx({
       success: true,
       instructionsCount: allInstructions.length,
     };
-
   } catch (error: any) {
     console.error("❌ Error creating NFT with single transaction:", error);
     throw error;
@@ -832,7 +870,9 @@ export async function mintGorbTokenSingleTx({
   uri: string;
 }) {
   try {
-    console.log("🚀 Creating Token using Token22 (Single Transaction) on Gorbchain...");
+    console.log(
+      "🚀 Creating Token using Token22 (Single Transaction) on Gorbchain..."
+    );
     console.log("Params:", { name, symbol, supply, decimals, uri });
 
     if (!wallet.publicKey || !wallet.signTransaction) {
@@ -842,13 +882,15 @@ export async function mintGorbTokenSingleTx({
     const payer = wallet;
     const mintKeypair = Keypair.generate();
     const mint = mintKeypair.publicKey;
-    
+
     // Calculate all space requirements upfront
     const extensions = [ExtensionType.MetadataPointer];
     const mintLen = getMintLen(extensions);
     const metadataSpace = calculateMetadataSpace(name, symbol, uri);
     const totalSpace = mintLen + metadataSpace;
-    const totalRent = await connection.getMinimumBalanceForRentExemption(totalSpace);
+    const totalRent = await connection.getMinimumBalanceForRentExemption(
+      totalSpace
+    );
 
     console.log("💰 Total space needed:", totalSpace, "bytes");
     console.log("💰 Total rent needed:", totalRent / 1e9, "SOL");
@@ -865,7 +907,7 @@ export async function mintGorbTokenSingleTx({
 
     // Check if ATA already exists
     const ataInfo = await connection.getAccountInfo(associatedToken);
-    
+
     // Build all instructions in one transaction
     const allInstructions: any[] = [];
 
@@ -947,45 +989,61 @@ export async function mintGorbTokenSingleTx({
     completeTx.feePayer = payer.publicKey;
     const { blockhash } = await connection.getLatestBlockhash();
     completeTx.recentBlockhash = blockhash;
-    
+
     // Sign with mint keypair
     completeTx.partialSign(mintKeypair);
-    
+
     // SIMULATE TRANSACTION FIRST
     console.log("🧪 Running detailed simulation before sending...");
-    const simulationResult = await simulateTransactionDetailed(connection, completeTx, wallet);
-    
+    const simulationResult = await simulateTransactionDetailed(
+      connection,
+      completeTx,
+      wallet
+    );
+
     if (!simulationResult.success) {
       console.log("❌ SIMULATION FAILED - NOT SENDING TRANSACTION");
-      throw new Error(`Transaction simulation failed: ${JSON.stringify(simulationResult.error)}`);
+      throw new Error(
+        `Transaction simulation failed: ${JSON.stringify(
+          simulationResult.error
+        )}`
+      );
     }
-    
+
     // Sign with wallet
     const signedTx = await wallet.signTransaction(completeTx);
-    
-    console.log("📦 Sending single transaction with", allInstructions.length, "instructions...");
-    
+
+    console.log(
+      "📦 Sending single transaction with",
+      allInstructions.length,
+      "instructions..."
+    );
+
     // Send transaction
     const signature = await connection.sendRawTransaction(
       signedTx.serialize(),
-      { 
+      {
         skipPreflight: false, // Don't skip preflight since we already simulated
-        maxRetries: 3
+        maxRetries: 3,
       }
     );
-    
+
     console.log("📤 Transaction sent! Signature:", signature);
     console.log("⏳ Waiting for confirmation...");
-    
+
     // Check transaction status properly
     const statusResult = await checkTransactionStatus(connection, signature);
-    
+
     if (!statusResult.success) {
       console.log("❌ TRANSACTION FAILED AFTER SENDING");
-      throw new Error(`Transaction failed: ${JSON.stringify(statusResult.error)}`);
+      throw new Error(
+        `Transaction failed: ${JSON.stringify(statusResult.error)}`
+      );
     }
 
-    console.log("🎉 SUCCESS! Your Token has been created in ONE transaction on Gorbchain!");
+    console.log(
+      "🎉 SUCCESS! Your Token has been created in ONE transaction on Gorbchain!"
+    );
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log("📍 Token Address:", mint.toBase58());
     console.log("🏷️ Name:", name);
@@ -1011,7 +1069,6 @@ export async function mintGorbTokenSingleTx({
       success: true,
       instructionsCount: allInstructions.length,
     };
-
   } catch (error: any) {
     console.error("❌ Error creating Token with single transaction:", error);
     throw error;
@@ -1025,6 +1082,7 @@ export async function mintGorbNFTToken22TwoTx({
   symbol,
   uri,
   description,
+  freezeAuth = null
 }: {
   connection: Connection;
   wallet: any;
@@ -1032,10 +1090,13 @@ export async function mintGorbNFTToken22TwoTx({
   symbol: string;
   uri: string;
   description: string;
+  freezeAuth: PublicKey | null;
 }) {
   try {
-    console.log("🚀 Creating NFT using Token22 (2-Transaction Optimized) on Gorbchain...");
-    
+    console.log(
+      "🚀 Creating NFT using Token22 (2-Transaction Optimized) on Gorbchain..."
+    );
+
     if (!wallet.publicKey || !wallet.signTransaction) {
       throw new Error("Wallet not connected");
     }
@@ -1043,11 +1104,11 @@ export async function mintGorbNFTToken22TwoTx({
     const payer = wallet;
     const mintKeypair = Keypair.generate();
     const mint = mintKeypair.publicKey;
-    
+
     // NFTs have supply of 1 and 0 decimals
     const supply = 1;
     const decimals = 0;
-    
+
     console.log("📋 NFT Details:");
     console.log("  Name:", name);
     console.log("  Symbol:", symbol);
@@ -1059,7 +1120,9 @@ export async function mintGorbNFTToken22TwoTx({
     const extensions = [ExtensionType.MetadataPointer];
     const mintLen = getMintLen(extensions);
     const metadataSpace = calculateMetadataSpace(name, symbol, uri);
-    const mintRent = await connection.getMinimumBalanceForRentExemption(mintLen);
+    const mintRent = await connection.getMinimumBalanceForRentExemption(
+      mintLen
+    );
 
     console.log("💰 Mint space needed:", mintLen, "bytes");
     console.log("💰 Metadata space needed:", metadataSpace, "bytes");
@@ -1067,7 +1130,7 @@ export async function mintGorbNFTToken22TwoTx({
 
     // ===== TRANSACTION 1: Setup mint account =====
     console.log("📦 Transaction 1: Setting up mint account...");
-    
+
     const tx1Instructions = [
       // Create mint account
       SystemProgram.createAccount({
@@ -1089,9 +1152,9 @@ export async function mintGorbNFTToken22TwoTx({
         mint,
         decimals,
         payer.publicKey,
-        payer.publicKey,
+        freezeAuth ? freezeAuth : null,
         TOKEN22_PROGRAM
-      )
+      ),
     ];
 
     const tx1 = new Transaction().add(...tx1Instructions);
@@ -1099,27 +1162,30 @@ export async function mintGorbNFTToken22TwoTx({
     const { blockhash: blockhash1 } = await connection.getLatestBlockhash();
     tx1.recentBlockhash = blockhash1;
     tx1.partialSign(mintKeypair);
-    
+
     const signedTx1 = await wallet.signTransaction(tx1);
-    const sig1 = await connection.sendRawTransaction(signedTx1.serialize(), { 
-      skipPreflight: true, 
-      maxRetries: 3 
+    const sig1 = await connection.sendRawTransaction(signedTx1.serialize(), {
+      skipPreflight: true,
+      maxRetries: 3,
     });
     await connection.confirmTransaction(sig1, "confirmed");
     console.log("✅ Transaction 1 complete! Signature:", sig1);
 
     // ===== TRANSACTION 2: Add metadata space, initialize metadata, create ATA, and mint =====
     console.log("📦 Transaction 2: Completing NFT setup...");
-    
+
     // Calculate additional rent needed for metadata
     const accountInfo = await connection.getAccountInfo(mint);
     if (!accountInfo) {
       throw new Error("Mint account not found after first transaction");
     }
-    
+
     const newSize = accountInfo.data.length + metadataSpace;
-    const additionalRent = (await connection.getMinimumBalanceForRentExemption(newSize)) - 
-                          (await connection.getMinimumBalanceForRentExemption(accountInfo.data.length));
+    const additionalRent =
+      (await connection.getMinimumBalanceForRentExemption(newSize)) -
+      (await connection.getMinimumBalanceForRentExemption(
+        accountInfo.data.length
+      ));
 
     // Get associated token account
     const associatedToken = getAssociatedTokenAddressSync(
@@ -1132,9 +1198,9 @@ export async function mintGorbNFTToken22TwoTx({
 
     // Check if ATA already exists
     const ataInfo = await connection.getAccountInfo(associatedToken);
-    
+
     const tx2Instructions = [];
-    
+
     // Add space for metadata if needed
     if (additionalRent > 0) {
       tx2Instructions.push(
@@ -1145,7 +1211,7 @@ export async function mintGorbNFTToken22TwoTx({
         })
       );
     }
-    
+
     // Initialize metadata
     tx2Instructions.push(
       createInitializeInstruction({
@@ -1159,7 +1225,7 @@ export async function mintGorbNFTToken22TwoTx({
         uri,
       })
     );
-    
+
     // Create ATA if needed
     if (!ataInfo) {
       tx2Instructions.push(
@@ -1173,7 +1239,7 @@ export async function mintGorbNFTToken22TwoTx({
         )
       );
     }
-    
+
     // Mint the NFT
     tx2Instructions.push(
       createMintToInstruction(
@@ -1190,16 +1256,18 @@ export async function mintGorbNFTToken22TwoTx({
     tx2.feePayer = payer.publicKey;
     const { blockhash: blockhash2 } = await connection.getLatestBlockhash();
     tx2.recentBlockhash = blockhash2;
-    
+
     const signedTx2 = await wallet.signTransaction(tx2);
-    const sig2 = await connection.sendRawTransaction(signedTx2.serialize(), { 
-      skipPreflight: true, 
-      maxRetries: 3 
+    const sig2 = await connection.sendRawTransaction(signedTx2.serialize(), {
+      skipPreflight: true,
+      maxRetries: 3,
     });
     await connection.confirmTransaction(sig2, "confirmed");
     console.log("✅ Transaction 2 complete! Signature:", sig2);
 
-    console.log("🎉 SUCCESS! Your NFT has been created in 2 optimized transactions on Gorbchain!");
+    console.log(
+      "🎉 SUCCESS! Your NFT has been created in 2 optimized transactions on Gorbchain!"
+    );
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log("📍 NFT Address:", mint.toBase58());
     console.log("🏷️ Name:", name);
@@ -1209,7 +1277,10 @@ export async function mintGorbNFTToken22TwoTx({
     console.log("🌐 Network: Gorbchain");
     console.log("📦 Transaction 1 (Setup):", sig1);
     console.log("📦 Transaction 2 (Complete):", sig2);
-    console.log("⚡ Total Instructions:", tx1Instructions.length + tx2Instructions.length);
+    console.log(
+      "⚡ Total Instructions:",
+      tx1Instructions.length + tx2Instructions.length
+    );
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
     return {
@@ -1221,7 +1292,6 @@ export async function mintGorbNFTToken22TwoTx({
       setupSignature: sig1,
       completeSignature: sig2,
     };
-
   } catch (error: any) {
     console.error("❌ Error creating NFT with 2-transaction approach:", error);
     throw error;
@@ -1246,7 +1316,9 @@ export async function mintGorbTokenTwoTx({
   uri: string;
 }) {
   try {
-    console.log("🚀 Creating Token using Token22 (2-Transaction Optimized) on Gorbchain...");
+    console.log(
+      "🚀 Creating Token using Token22 (2-Transaction Optimized) on Gorbchain..."
+    );
     console.log("Params:", { name, symbol, supply, decimals, uri });
 
     if (!wallet.publicKey || !wallet.signTransaction) {
@@ -1256,12 +1328,14 @@ export async function mintGorbTokenTwoTx({
     const payer = wallet;
     const mintKeypair = Keypair.generate();
     const mint = mintKeypair.publicKey;
-    
+
     // Calculate space requirements
     const extensions = [ExtensionType.MetadataPointer];
     const mintLen = getMintLen(extensions);
     const metadataSpace = calculateMetadataSpace(name, symbol, uri);
-    const mintRent = await connection.getMinimumBalanceForRentExemption(mintLen);
+    const mintRent = await connection.getMinimumBalanceForRentExemption(
+      mintLen
+    );
 
     console.log("💰 Mint space needed:", mintLen, "bytes");
     console.log("💰 Metadata space needed:", metadataSpace, "bytes");
@@ -1270,7 +1344,7 @@ export async function mintGorbTokenTwoTx({
 
     // ===== TRANSACTION 1: Setup mint account =====
     console.log("📦 Transaction 1: Setting up mint account...");
-    
+
     const tx1Instructions = [
       // Create mint account
       SystemProgram.createAccount({
@@ -1294,7 +1368,7 @@ export async function mintGorbTokenTwoTx({
         payer.publicKey,
         payer.publicKey,
         TOKEN22_PROGRAM
-      )
+      ),
     ];
 
     const tx1 = new Transaction().add(...tx1Instructions);
@@ -1302,27 +1376,30 @@ export async function mintGorbTokenTwoTx({
     const { blockhash: blockhash1 } = await connection.getLatestBlockhash();
     tx1.recentBlockhash = blockhash1;
     tx1.partialSign(mintKeypair);
-    
+
     const signedTx1 = await wallet.signTransaction(tx1);
-    const sig1 = await connection.sendRawTransaction(signedTx1.serialize(), { 
-      skipPreflight: true, 
-      maxRetries: 3 
+    const sig1 = await connection.sendRawTransaction(signedTx1.serialize(), {
+      skipPreflight: true,
+      maxRetries: 3,
     });
     await connection.confirmTransaction(sig1, "confirmed");
     console.log("✅ Transaction 1 complete! Signature:", sig1);
 
     // ===== TRANSACTION 2: Add metadata space, initialize metadata, create ATA, and mint =====
     console.log("📦 Transaction 2: Completing token setup...");
-    
+
     // Calculate additional rent needed for metadata
     const accountInfo = await connection.getAccountInfo(mint);
     if (!accountInfo) {
       throw new Error("Mint account not found after first transaction");
     }
-    
+
     const newSize = accountInfo.data.length + metadataSpace;
-    const additionalRent = (await connection.getMinimumBalanceForRentExemption(newSize)) - 
-                          (await connection.getMinimumBalanceForRentExemption(accountInfo.data.length));
+    const additionalRent =
+      (await connection.getMinimumBalanceForRentExemption(newSize)) -
+      (await connection.getMinimumBalanceForRentExemption(
+        accountInfo.data.length
+      ));
 
     // Get associated token account
     const associatedToken = getAssociatedTokenAddressSync(
@@ -1335,9 +1412,9 @@ export async function mintGorbTokenTwoTx({
 
     // Check if ATA already exists
     const ataInfo = await connection.getAccountInfo(associatedToken);
-    
+
     const tx2Instructions = [];
-    
+
     // Add space for metadata if needed
     if (additionalRent > 0) {
       tx2Instructions.push(
@@ -1348,7 +1425,7 @@ export async function mintGorbTokenTwoTx({
         })
       );
     }
-    
+
     // Initialize metadata
     tx2Instructions.push(
       createInitializeInstruction({
@@ -1362,7 +1439,7 @@ export async function mintGorbTokenTwoTx({
         uri,
       })
     );
-    
+
     // Create ATA if needed
     if (!ataInfo) {
       tx2Instructions.push(
@@ -1376,7 +1453,7 @@ export async function mintGorbTokenTwoTx({
         )
       );
     }
-    
+
     // Mint tokens
     const supplyBigInt = BigInt(supply) * BigInt(10 ** Number(decimals));
     tx2Instructions.push(
@@ -1394,16 +1471,18 @@ export async function mintGorbTokenTwoTx({
     tx2.feePayer = payer.publicKey;
     const { blockhash: blockhash2 } = await connection.getLatestBlockhash();
     tx2.recentBlockhash = blockhash2;
-    
+
     const signedTx2 = await wallet.signTransaction(tx2);
-    const sig2 = await connection.sendRawTransaction(signedTx2.serialize(), { 
-      skipPreflight: true, 
-      maxRetries: 3 
+    const sig2 = await connection.sendRawTransaction(signedTx2.serialize(), {
+      skipPreflight: true,
+      maxRetries: 3,
     });
     await connection.confirmTransaction(sig2, "confirmed");
     console.log("✅ Transaction 2 complete! Signature:", sig2);
 
-    console.log("🎉 SUCCESS! Your Token has been created in 2 optimized transactions on Gorbchain!");
+    console.log(
+      "🎉 SUCCESS! Your Token has been created in 2 optimized transactions on Gorbchain!"
+    );
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log("📍 Token Address:", mint.toBase58());
     console.log("🏷️ Name:", name);
@@ -1415,7 +1494,10 @@ export async function mintGorbTokenTwoTx({
     console.log("🌐 Network: Gorbchain");
     console.log("📦 Transaction 1 (Setup):", sig1);
     console.log("📦 Transaction 2 (Complete):", sig2);
-    console.log("⚡ Total Instructions:", tx1Instructions.length + tx2Instructions.length);
+    console.log(
+      "⚡ Total Instructions:",
+      tx1Instructions.length + tx2Instructions.length
+    );
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
     return {
@@ -1432,9 +1514,11 @@ export async function mintGorbTokenTwoTx({
       setupSignature: sig1,
       completeSignature: sig2,
     };
-
   } catch (error: any) {
-    console.error("❌ Error creating Token with 2-transaction approach:", error);
+    console.error(
+      "❌ Error creating Token with 2-transaction approach:",
+      error
+    );
     throw error;
   }
 }
@@ -1448,29 +1532,39 @@ export async function simulateTransactionDetailed(
   try {
     console.log("🔍 TRANSACTION SIMULATION STARTING...");
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    
+
     // Check wallet balance first
     const balance = await connection.getBalance(wallet.publicKey);
     console.log("💰 Wallet Balance:", balance / 1e9, "SOL");
-    
+
     // Check if we have enough SOL for the transaction
     const estimatedFee = 0.01; // Conservative estimate
     if (balance < estimatedFee * 1e9) {
-      console.log("❌ INSUFFICIENT BALANCE - Need at least", estimatedFee, "SOL");
+      console.log(
+        "❌ INSUFFICIENT BALANCE - Need at least",
+        estimatedFee,
+        "SOL"
+      );
       return { success: false, error: "Insufficient balance" };
     }
-    
+
     // Get recent blockhash
-    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = wallet.publicKey;
-    
+
     console.log("📊 Transaction Details:");
     console.log("  - Instructions:", transaction.instructions.length);
-    console.log("  - Accounts:", transaction.instructions.map(ix => ix.keys.length).reduce((a, b) => a + b, 0));
+    console.log(
+      "  - Accounts:",
+      transaction.instructions
+        .map((ix) => ix.keys.length)
+        .reduce((a, b) => a + b, 0)
+    );
     console.log("  - Recent Blockhash:", blockhash);
     console.log("  - Fee Payer:", wallet.publicKey.toBase58());
-    
+
     // Log each instruction
     transaction.instructions.forEach((ix, index) => {
       console.log(`  📋 Instruction ${index + 1}:`);
@@ -1478,60 +1572,65 @@ export async function simulateTransactionDetailed(
       console.log(`    - Accounts: ${ix.keys.length}`);
       console.log(`    - Data Length: ${ix.data.length} bytes`);
     });
-    
+
     // Simulate the transaction
     console.log("🧪 Running Transaction Simulation...");
-    
+
     const simulationResult = await connection.simulateTransaction(transaction);
-    
+
     console.log("📊 SIMULATION RESULTS:");
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    
+
     if (simulationResult.value.err) {
       console.log("❌ SIMULATION FAILED:");
       console.log("   Error:", simulationResult.value.err);
-      
+
       // Try to decode the error
-      if (typeof simulationResult.value.err === 'object') {
-        console.log("   Error Details:", JSON.stringify(simulationResult.value.err, null, 2));
+      if (typeof simulationResult.value.err === "object") {
+        console.log(
+          "   Error Details:",
+          JSON.stringify(simulationResult.value.err, null, 2)
+        );
       }
-      
+
       if (simulationResult.value.logs) {
         console.log("📜 Transaction Logs:");
         simulationResult.value.logs.forEach((log, index) => {
           console.log(`   ${index + 1}. ${log}`);
         });
       }
-      
-      return { 
-        success: false, 
+
+      return {
+        success: false,
         error: simulationResult.value.err,
-        logs: simulationResult.value.logs 
+        logs: simulationResult.value.logs,
       };
     }
-    
+
     console.log("✅ SIMULATION SUCCESSFUL!");
     console.log("   Compute Units Used:", simulationResult.value.unitsConsumed);
-    
+
     if (simulationResult.value.accounts) {
-      console.log("   Accounts Modified:", simulationResult.value.accounts.length);
+      console.log(
+        "   Accounts Modified:",
+        simulationResult.value.accounts.length
+      );
     }
-    
+
     if (simulationResult.value.logs) {
       console.log("📜 Transaction Logs:");
       simulationResult.value.logs.forEach((log, index) => {
         console.log(`   ${index + 1}. ${log}`);
       });
     }
-    
+
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    
-    return { 
-      success: true, 
+
+    return {
+      success: true,
       result: simulationResult.value,
-      logs: simulationResult.value.logs 
+      logs: simulationResult.value.logs,
     };
-    
   } catch (error: any) {
     console.log("❌ SIMULATION ERROR:", error.message);
     return { success: false, error: error.message };
@@ -1545,33 +1644,33 @@ export async function checkTransactionStatus(
   maxRetries: number = 30
 ) {
   console.log("🔍 Checking transaction status:", signature);
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       const status = await connection.getSignatureStatus(signature);
       console.log(`📊 Status check ${i + 1}/${maxRetries}:`, status?.value);
-      
-      if (status?.value?.confirmationStatus === 'confirmed' || 
-          status?.value?.confirmationStatus === 'finalized') {
-        
+
+      if (
+        status?.value?.confirmationStatus === "confirmed" ||
+        status?.value?.confirmationStatus === "finalized"
+      ) {
         if (status.value.err) {
           console.log("❌ TRANSACTION FAILED:");
           console.log("   Error:", status.value.err);
           return { success: false, error: status.value.err };
         }
-        
+
         console.log("✅ Transaction confirmed successfully!");
         return { success: true, status: status.value };
       }
-      
+
       // Wait before next check
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       console.log(`⚠️ Error checking status (attempt ${i + 1}):`, error);
     }
   }
-  
+
   console.log("⏰ Transaction status check timeout");
   return { success: false, error: "Transaction confirmation timeout" };
 }
