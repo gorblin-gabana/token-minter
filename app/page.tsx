@@ -429,7 +429,7 @@ export default function GorbaganaLaunchpad() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => window.open(`https://gorbscan.com/address/${lastTransaction.address}`, '_blank')}
+                            onClick={() => window.open(`https://gorbscan.com/token/${lastTransaction.address}`, '_blank')}
                             className="w-6 h-6 p-0 hover:bg-green-500/20 rounded"
                           >
                             <ExternalLink className="w-3 h-3" />

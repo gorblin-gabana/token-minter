@@ -1094,7 +1094,7 @@ export async function mintGorbNFTToken22TwoTx({
 }) {
   try {
     console.log(
-      "🚀 Creating NFT using Token22 (2-Transaction Optimized) on Gorbchain..."
+      "🚀 Creating NFT using Token22 (2-Transaction Optimized) on Gorbchain...", + `with freezeAuth: ${freezeAuth}`
     );
 
     if (!wallet.publicKey || !wallet.signTransaction) {
@@ -1152,7 +1152,7 @@ export async function mintGorbNFTToken22TwoTx({
         mint,
         decimals,
         payer.publicKey,
-        freezeAuth ? freezeAuth : null,
+        null,
         TOKEN22_PROGRAM
       ),
     ];
@@ -1306,6 +1306,7 @@ export async function mintGorbTokenTwoTx({
   supply,
   decimals,
   uri,
+  freezeAuth = null,
 }: {
   connection: Connection;
   wallet: any;
@@ -1314,10 +1315,11 @@ export async function mintGorbTokenTwoTx({
   supply: string | number;
   decimals: string | number;
   uri: string;
+  freezeAuth: PublicKey | null;
 }) {
   try {
     console.log(
-      "🚀 Creating Token using Token22 (2-Transaction Optimized) on Gorbchain..."
+      "🚀 Creating Token using Token22 (2-Transaction Optimized) on Gorbchain..." , `freezeauth == ${freezeAuth}`
     );
     console.log("Params:", { name, symbol, supply, decimals, uri });
 
@@ -1366,7 +1368,7 @@ export async function mintGorbTokenTwoTx({
         mint,
         Number(decimals),
         payer.publicKey,
-        payer.publicKey,
+        freezeAuth ? freezeAuth : null,
         TOKEN22_PROGRAM
       ),
     ];
