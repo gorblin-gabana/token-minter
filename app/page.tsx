@@ -210,14 +210,14 @@ export default function GorbaganaLaunchpad() {
 
     setIsLoading(true)
     try {
-      const result = await mintGorbNFTToken22TwoTx({
+      const result = await mintGorbNFTToken22SingleTx({
         connection,
         wallet: wallet.adapter,
         name: nftForm.name,
         symbol: nftForm.symbol,
         uri: nftForm.uri,
         description: nftForm.description,
-        freezeAuth: freezeAuthorityPubkey ? freezeAuthorityPubkey : null,
+        // freezeAuth: freezeAuthorityPubkey ? freezeAuthorityPubkey : null,
       })
 
       setLastTransaction({

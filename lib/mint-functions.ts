@@ -774,8 +774,7 @@ export async function mintGorbNFTToken22SingleTx({
     const { blockhash } = await connection.getLatestBlockhash();
     completeTx.recentBlockhash = blockhash;
 
-    // Sign with mint keypair
-    completeTx.partialSign(mintKeypair);
+    // DO NOT SIGN YET
 
     // SIMULATE TRANSACTION FIRST
     console.log("🧪 Running detailed simulation before sending...");
@@ -794,8 +793,10 @@ export async function mintGorbNFTToken22SingleTx({
       );
     }
 
-    // Sign with wallet
-    const signedTx = await wallet.signTransaction(completeTx);
+    // Sign with wallet FIRST
+    const walletSignedTx = await wallet.signTransaction(completeTx);
+    // Then sign with mint keypair
+    walletSignedTx.partialSign(mintKeypair);
 
     console.log(
       "📦 Sending single transaction with",
@@ -805,7 +806,7 @@ export async function mintGorbNFTToken22SingleTx({
 
     // Send transaction
     const signature = await connection.sendRawTransaction(
-      signedTx.serialize(),
+      walletSignedTx.serialize(),
       {
         skipPreflight: false, // Don't skip preflight since we already simulated
         maxRetries: 3,
@@ -1082,7 +1083,7 @@ export async function mintGorbNFTToken22TwoTx({
   symbol,
   uri,
   description,
-  freezeAuth = null
+  freezeAuth = null,
 }: {
   connection: Connection;
   wallet: any;
@@ -1094,7 +1095,8 @@ export async function mintGorbNFTToken22TwoTx({
 }) {
   try {
     console.log(
-      "🚀 Creating NFT using Token22 (2-Transaction Optimized) on Gorbchain...", + `with freezeAuth: ${freezeAuth}`
+      "🚀 Creating NFT using Token22 (2-Transaction Optimized) on Gorbchain...",
+      +`with freezeAuth: ${freezeAuth}`
     );
 
     if (!wallet.publicKey || !wallet.signTransaction) {
@@ -1319,7 +1321,8 @@ export async function mintGorbTokenTwoTx({
 }) {
   try {
     console.log(
-      "🚀 Creating Token using Token22 (2-Transaction Optimized) on Gorbchain..." , `freezeauth == ${freezeAuth}`
+      "🚀 Creating Token using Token22 (2-Transaction Optimized) on Gorbchain...",
+      `freezeauth == ${freezeAuth}`
     );
     console.log("Params:", { name, symbol, supply, decimals, uri });
 
