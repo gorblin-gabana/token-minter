@@ -34,6 +34,7 @@ import { useWallet } from "@solana/wallet-adapter-react"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
 import { useWalletBalance } from "@/hooks/use-wallet-balance"
 import { mintGorbToken, mintGorbNFT, mintGorbNFTToken22, mintGorbNFTToken22SingleTx, mintGorbTokenSingleTx, mintGorbNFTToken22TwoTx, mintGorbTokenTwoTx, simulateTransactionDetailed, checkTransactionStatus } from "@/lib/mint-functions"
+import { createTokenWithWallet } from "@/lib/createTokenWithWallet"
 import { WalletDropdown } from "@/components/wallet-dropdown"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { GORB_CONNECTION } from "@/lib/utils"
@@ -116,7 +117,7 @@ export default function GorbaganaLaunchpad() {
 
     setIsLoading(true)
     try {
-      const result = await mintGorbTokenTwoTx({
+      const result = await createTokenWithWallet({
         connection,
         wallet: wallet.adapter,
         name: tokenForm.name,
