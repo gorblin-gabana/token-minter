@@ -29,16 +29,16 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 
 const CUSTOM_MPL_CORE_PROGRAM =
   process.env.NEXT_PUBLIC_GORB_CUSTOM_MPL_CORE_PROGRAM ||
-  "BvoSmPBF6mBRxBMY9FPguw1zUoUg3xrc5CaWf7y5ACkc";
+  "GMTAp1moCdGh4TEwFTcCJKeKL3UMEDB6vKpo2uxM9h4s";
 const GORBCHAIN_RPC =
   process.env.NEXT_PUBLIC_GORB_RPC_URL || "https://rpc.gorbchain.xyz";
 
 // Gorbagan chain specific program IDs
 const TOKEN22_PROGRAM = new PublicKey(
-  "FGyzDo6bhE7gFmSYymmFnJ3SZZu3xWGBA7sNHXR7QQsn"
+  "G22oYgZ6LnVcy7v8eSNi2xpNk1NcZiPD8CVKSTut7oZ6"
 );
 const ASSOCIATED_TOKEN_PROGRAM = new PublicKey(
-  "4YpYoLVTQ8bxcne9GneN85RUXeN7pqGTwgPcY71ZL5gX"
+  "GoATGVNeSXerFerPqTJ8hcED1msPWHHLxao2vwBYqowm"
 );
 
 // Helper to calculate metadata space
