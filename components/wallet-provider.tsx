@@ -1,36 +1,38 @@
-"use client"
 
-import type React from "react"
-import { useMemo } from "react"
-import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react"
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
+"use client"
+import React, { useMemo } from 'react';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
   TorusWalletAdapter,
-  LedgerWalletAdapter,
-} from "@solana/wallet-adapter-wallets"
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
-import { clusterApiUrl } from "@solana/web3.js"
+  CoinbaseWalletAdapter,
+  LedgerWalletAdapter
 
-// Import wallet adapter CSS
-require("@solana/wallet-adapter-react-ui/styles.css")
+} from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl } from '@solana/web3.js';
+// trashpack
+import { TrashpackWalletAdapter } from 'trashpack-wallet-adapter';
+import '@solana/wallet-adapter-react-ui/styles.css';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+
 
 export function WalletContextProvider({ children }: { children: React.ReactNode }) {
-  // For Gorbagana chain, you'll replace this with your custom RPC endpoint
-  const network = WalletAdapterNetwork.Devnet
-  const endpoint = useMemo(() => clusterApiUrl(network), [network])
-  // Replace with: const endpoint = 'https://your-gorbagana-rpc-endpoint.com'
+  const network = WalletAdapterNetwork.Mainnet
+  const endpoint = useMemo(() => process.env.NEXT_PUBLIC_GOR_RPC_URL || clusterApiUrl(network), [network])
 
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
       new TorusWalletAdapter(),
+      new CoinbaseWalletAdapter(),
       new LedgerWalletAdapter(),
+      new TrashpackWalletAdapter()
     ],
-    [],
-  )
+    []
+  );
 
   return (
     <ConnectionProvider endpoint={endpoint}>
@@ -38,5 +40,5 @@ export function WalletContextProvider({ children }: { children: React.ReactNode 
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
-  )
+  );
 }
