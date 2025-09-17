@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { WalletContextProvider } from "@/components/wallet-provider"
+import { ReduxProvider } from "@/components/providers/ReduxProvider"
 import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -156,12 +157,14 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <WalletContextProvider>
-            {children}
-            <Toaster />
-          </WalletContextProvider>
-        </ThemeProvider>
+        <ReduxProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+            <WalletContextProvider>
+              {children}
+              <Toaster />
+            </WalletContextProvider>
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   )

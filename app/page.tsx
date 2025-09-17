@@ -38,6 +38,11 @@ import { createTokenWithWallet } from "@/lib/createTokenWithWallet"
 import { WalletDropdown } from "@/components/wallet-dropdown"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { GORB_CONNECTION } from "@/lib/utils"
+import { useUser } from "@/hooks/use-user"
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
+import { createToken } from "@/lib/store/slices/tokenSlice"
+import { createNFT } from "@/lib/store/slices/nftSlice"
+import { fetchPlatformStats } from "@/lib/store/slices/statsSlice"
 
 export default function GorbaganaLaunchpad() {
   const { theme, setTheme } = useTheme()
@@ -46,6 +51,11 @@ export default function GorbaganaLaunchpad() {
   const { balance, loading: balanceLoading } = useWalletBalance()
   const [isLoading, setIsLoading] = useState(false)
   const [mounted, setMounted] = useState(false)
+  
+  // Redux hooks
+  const dispatch = useAppDispatch()
+  const { currentUser, isAuthenticated } = useUser()
+  const { platformStats } = useAppSelector((state) => state.stats)
 
   // Token form state
   const [tokenForm, setTokenForm] = useState({
@@ -77,7 +87,9 @@ export default function GorbaganaLaunchpad() {
 
   useEffect(() => {
     setMounted(true)
-  }, [])
+    // Fetch platform stats on component mount
+    dispatch(fetchPlatformStats())
+  }, [dispatch])
 
   const handleTokenLaunch = async () => {
     setTokenFreezeAuthorityError(null)
@@ -133,6 +145,40 @@ export default function GorbaganaLaunchpad() {
         signature: result.signature,
         address: result.tokenAddress,
       })
+
+      // Save token to database
+      if (currentUser) {
+        try {
+          await dispatch(createToken({
+            mintAddress: result.tokenAddress,
+            name: tokenForm.name,
+            symbol: tokenForm.symbol,
+            supply: tokenForm.supply,
+            decimals: Number.parseInt(tokenForm.decimals),
+            uri: tokenForm.uri || undefined,
+            freezeAuthority: freezeAuthorityPubkey?.toBase58() || undefined,
+            mintAuthority: publicKey?.toBase58() || '',
+            updateAuthority: publicKey?.toBase58() || '',
+            isFrozen: false,
+            isInitialized: true,
+            programId: "G22oYgZ6LnVcy7v8eSNi2xpNk1NcZiPD8CVKSTut7oZ6",
+            creator: currentUser._id!,
+            transactionSignature: result.signature,
+            metadata: {
+              name: tokenForm.name,
+              symbol: tokenForm.symbol,
+              uri: tokenForm.uri || undefined,
+              updateAuthority: publicKey?.toBase58() || '',
+              additionalMetadata: []
+            }
+          })).unwrap()
+
+          // Refresh platform stats
+          dispatch(fetchPlatformStats())
+        } catch (error) {
+          console.error('Error saving token to database:', error)
+        }
+      }
 
       toast({
         title: "🚀 Token Launched Successfully!",
@@ -226,6 +272,41 @@ export default function GorbaganaLaunchpad() {
         signature: result.signature,
         address: result.nftAddress,
       })
+
+      // Save NFT to database
+      if (currentUser) {
+        try {
+          await dispatch(createNFT({
+            mintAddress: result.nftAddress,
+            name: nftForm.name,
+            symbol: nftForm.symbol,
+            uri: nftForm.uri,
+            description: nftForm.description,
+            freezeAuthority: freezeAuthorityPubkey?.toBase58() || undefined,
+            mintAuthority: publicKey?.toBase58() || '',
+            updateAuthority: publicKey?.toBase58() || '',
+            isFrozen: false,
+            isInitialized: true,
+            programId: "G22oYgZ6LnVcy7v8eSNi2xpNk1NcZiPD8CVKSTut7oZ6",
+            creator: currentUser._id!,
+            transactionSignature: result.signature,
+            royaltyFee: 5.0,
+            metadata: {
+              name: nftForm.name,
+              symbol: nftForm.symbol,
+              uri: nftForm.uri,
+              description: nftForm.description,
+              updateAuthority: publicKey?.toBase58() || '',
+              additionalMetadata: []
+            }
+          })).unwrap()
+
+          // Refresh platform stats
+          dispatch(fetchPlatformStats())
+        } catch (error) {
+          console.error('Error saving NFT to database:', error)
+        }
+      }
 
       toast({
         title: "🎨 NFT Minted Successfully!",
@@ -324,7 +405,9 @@ export default function GorbaganaLaunchpad() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-blue-700">Total Tokens</p>
-                  <p className="text-3xl font-bold text-blue-900">0</p>
+                  <p className="text-3xl font-bold text-blue-900">
+                    {platformStats?.totalTokens || 0}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
                   <Coins className="w-6 h-6 text-blue-700" />
@@ -338,7 +421,9 @@ export default function GorbaganaLaunchpad() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-purple-700">Total NFTs</p>
-                  <p className="text-3xl font-bold text-purple-900">0</p>
+                  <p className="text-3xl font-bold text-purple-900">
+                    {platformStats?.totalNFTs || 0}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
                   <Gem className="w-6 h-6 text-purple-700" />
@@ -352,7 +437,9 @@ export default function GorbaganaLaunchpad() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-green-700">Network TVL</p>
-                  <p className="text-3xl font-bold text-green-900">$0</p>
+                  <p className="text-3xl font-bold text-green-900">
+                    ${platformStats?.networkTVL || 0}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
                   <TrendingUp className="w-6 h-6 text-green-700" />
@@ -366,7 +453,9 @@ export default function GorbaganaLaunchpad() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-orange-700">Active Users</p>
-                  <p className="text-3xl font-bold text-orange-900">0</p>
+                  <p className="text-3xl font-bold text-orange-900">
+                    {platformStats?.totalUsers || 0}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
                   <Users className="w-6 h-6 text-orange-700" />

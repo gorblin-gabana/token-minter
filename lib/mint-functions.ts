@@ -19,12 +19,6 @@ import {
   ExtensionType,
 } from "@solana/spl-token";
 
-const CUSTOM_MPL_CORE_PROGRAM =
-  process.env.NEXT_PUBLIC_GORB_CUSTOM_MPL_CORE_PROGRAM ||
-  "GMTAp1moCdGh4TEwFTcCJKeKL3UMEDB6vKpo2uxM9h4s";
-const GORBCHAIN_RPC =
-  process.env.NEXT_PUBLIC_GORB_RPC_URL || "https://rpc.gorbchain.xyz";
-
 // Gorbagan chain specific program IDs
 const TOKEN22_PROGRAM = new PublicKey(
   "G22oYgZ6LnVcy7v8eSNi2xpNk1NcZiPD8CVKSTut7oZ6"
