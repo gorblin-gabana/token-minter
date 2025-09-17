@@ -28,7 +28,7 @@ import { Navigation } from "@/components/navigation"
 
 export default function TopUsersPage() {
   const dispatch = useAppDispatch()
-  const { topUsers, isLoading } = useAppSelector((state: any) => state.user)
+  const { topUsers = [], isLoading } = useAppSelector((state: any) => state.user || {})
   
   const [isRefreshing, setIsRefreshing] = useState(false)
 

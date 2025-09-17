@@ -22,7 +22,9 @@ import {
   Coins, 
   RefreshCw, 
   ChevronDown,
-  ExternalLink
+  ExternalLink,
+  User,
+  UserCircle
 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 
@@ -246,6 +248,14 @@ export function WalletDropdown() {
            >
              <ExternalLink className="w-4 h-4" />
              View on GorbScan
+           </DropdownMenuItem>
+
+           <DropdownMenuItem 
+             onClick={() => window.open('/profile', '_self')}
+             className="rounded-xl cursor-pointer flex items-center gap-3 p-3 text-black text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 dark:!text-white"
+           >
+             <UserCircle className="w-4 h-4" />
+             View Profile
            </DropdownMenuItem>
 
            <DropdownMenuItem 

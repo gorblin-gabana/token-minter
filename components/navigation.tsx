@@ -27,10 +27,8 @@ export function Navigation() {
   const { platformStats } = useAppSelector((state) => state.stats)
 
   const navigation = [
-    { name: "Home", href: "/", icon: Home },
     { name: "Tokens", href: "/tokens", icon: Coins, count: platformStats?.totalTokens },
     { name: "NFTs", href: "/nfts", icon: Gem, count: platformStats?.totalNFTs },
-    { name: "Profile", href: "/profile", icon: User },
     { name: "Top Users", href: "/top-users", icon: Trophy },
   ]
 
