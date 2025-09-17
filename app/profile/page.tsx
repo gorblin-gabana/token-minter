@@ -1,0 +1,518 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { 
+  User, 
+  Coins, 
+  Gem, 
+  ArrowLeft,
+  ExternalLink, 
+  Copy, 
+  Calendar,
+  Wallet,
+  Trophy,
+  TrendingUp,
+  Activity,
+  Settings,
+  Edit,
+  Save,
+  X
+} from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { toast } from "@/hooks/use-toast"
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
+import { fetchUserTokens } from "@/lib/store/slices/tokenSlice"
+import { fetchUserNFTs as fetchUserNFTsAction } from "@/lib/store/slices/nftSlice"
+import { Navigation } from "@/components/navigation"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { useWalletBalance } from "@/hooks/use-wallet-balance"
+import { useTokenBalances } from "@/hooks/use-token-balances"
+
+export default function ProfilePage() {
+  const dispatch = useAppDispatch()
+  const { currentUser, isAuthenticated } = useAppSelector((state: any) => state.user || { currentUser: null, isAuthenticated: false })
+  const { userTokens } = useAppSelector((state: any) => state.tokens || { userTokens: [] })
+  const { userNfts } = useAppSelector((state: any) => state.nfts || { userNfts: [] })
+  const { balance } = useWalletBalance()
+  const { tokenBalances } = useTokenBalances()
+  const { publicKey } = useWallet()
+  
+  const [isEditing, setIsEditing] = useState(false)
+  const [profileData, setProfileData] = useState({
+    username: "",
+    bio: "",
+    avatar: ""
+  })
+
+  useEffect(() => {
+    if (currentUser && isAuthenticated) {
+      // Load user's tokens and NFTs
+      dispatch(fetchUserTokens(currentUser._id!))
+      dispatch(fetchUserNFTsAction(currentUser._id!))
+      
+      // Set profile data
+      setProfileData({
+        username: currentUser.profile?.username || "",
+        bio: currentUser.profile?.bio || "",
+        avatar: currentUser.profile?.avatar || ""
+      })
+    }
+  }, [currentUser, isAuthenticated, dispatch])
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast({
+      title: "Copied!",
+      description: "Address copied to clipboard",
+    })
+  }
+
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
+  }
+
+  const handleSaveProfile = () => {
+    // TODO: Implement profile update
+    setIsEditing(false)
+    toast({
+      title: "Profile Updated",
+      description: "Your profile has been updated successfully",
+    })
+  }
+
+  if (!isAuthenticated || !currentUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-blue-950/20 dark:to-indigo-950/30">
+        <Navigation />
+        <main className="container mx-auto px-4 py-20">
+          <Card className="max-w-md mx-auto border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+            <CardContent className="p-12 text-center">
+              <User className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+                Please Connect Your Wallet
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400 mb-6">
+                Connect your wallet to view your profile and assets
+              </p>
+              <Link href="/">
+                <Button className="gap-2">
+                  <Wallet className="w-4 h-4" />
+                  Go to Home
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-blue-950/20 dark:to-indigo-950/30">
+      <Navigation />
+      
+      <main className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-4 mb-6">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </Button>
+            </Link>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
+                <User className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+                  My Profile
+                </h1>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Manage your assets and profile information
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Profile Card */}
+          <div className="lg:col-span-1">
+            <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm sticky top-24">
+              <CardContent className="p-6">
+                <div className="text-center mb-6">
+                  <div className="relative inline-block mb-4">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
+                      {profileData.avatar ? (
+                        <Image
+                          src={profileData.avatar}
+                          alt="Profile"
+                          width={96}
+                          height={96}
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      ) : (
+                        <User className="w-12 h-12 text-white" />
+                      )}
+                    </div>
+                    {isEditing && (
+                      <Button
+                        size="sm"
+                        className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full p-0"
+                        onClick={() => {/* TODO: Implement avatar upload */}}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {isEditing ? (
+                    <div className="space-y-4">
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Username"
+                          value={profileData.username}
+                          onChange={(e) => setProfileData({ ...profileData, username: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                        />
+                      </div>
+                      <div>
+                        <textarea
+                          placeholder="Bio"
+                          value={profileData.bio}
+                          onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 resize-none"
+                          rows={3}
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={handleSaveProfile} className="flex-1">
+                          <Save className="w-4 h-4 mr-2" />
+                          Save
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                        {profileData.username || "Anonymous User"}
+                      </h2>
+                      <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
+                        {profileData.bio || "No bio yet"}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsEditing(true)}
+                        className="gap-2"
+                      >
+                        <Edit className="w-4 h-4" />
+                        Edit Profile
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-600 dark:text-slate-400">Wallet Address:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-slate-900 dark:text-slate-100">
+                        {formatAddress(currentUser.walletAddress)}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard(currentUser.walletAddress)}
+                        className="w-6 h-6 p-0"
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-600 dark:text-slate-400">GOR Balance:</span>
+                    <span className="font-mono text-slate-900 dark:text-slate-100">
+                      {balance.toFixed(4)} GOR
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-600 dark:text-slate-400">Member Since:</span>
+                    <span className="text-slate-900 dark:text-slate-100">
+                      {formatDate(currentUser.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            <Tabs defaultValue="overview" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="tokens">Tokens</TabsTrigger>
+                <TabsTrigger value="nfts">NFTs</TabsTrigger>
+                <TabsTrigger value="assets">Assets</TabsTrigger>
+              </TabsList>
+
+              {/* Overview Tab */}
+              <TabsContent value="overview" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                    <CardContent className="p-6 text-center">
+                      <Coins className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                      <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                        {currentUser.totalTokensLaunched}
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">Tokens Launched</div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                    <CardContent className="p-6 text-center">
+                      <Gem className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                      <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                        {currentUser.totalNftsLaunched}
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">NFTs Minted</div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                    <CardContent className="p-6 text-center">
+                      <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                      <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                        {currentUser.totalTokensLaunched + currentUser.totalNftsLaunched}
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">Total Launches</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="w-5 h-5" />
+                      Recent Activity
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                      <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>No recent activity to show</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Tokens Tab */}
+              <TabsContent value="tokens" className="space-y-6">
+                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Coins className="w-5 h-5" />
+                      My Tokens ({userTokens.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {userTokens.length > 0 ? (
+                      <div className="space-y-4">
+                        {userTokens.map((token: any) => (
+                          <div key={token._id} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <Coins className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{token.name}</h4>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">{token.symbol}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary">Token22</Badge>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => window.open(`https://gorbscan.com/token/${token.mintAddress}`, '_blank')}
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                        <Coins className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p>No tokens launched yet</p>
+                        <Link href="/">
+                          <Button className="mt-4 gap-2">
+                            <Coins className="w-4 h-4" />
+                            Launch Your First Token
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* NFTs Tab */}
+              <TabsContent value="nfts" className="space-y-6">
+                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Gem className="w-5 h-5" />
+                      My NFTs ({userNfts.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {userNfts.length > 0 ? (
+                      <div className="space-y-4">
+                        {userNfts.map((nft: any) => (
+                          <div key={nft._id} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                                <Gem className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{nft.name}</h4>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">{nft.symbol}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary">NFT</Badge>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => window.open(`https://gorbscan.com/token/${nft.mintAddress}`, '_blank')}
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                        <Gem className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p>No NFTs minted yet</p>
+                        <Link href="/">
+                          <Button className="mt-4 gap-2">
+                            <Gem className="w-4 h-4" />
+                            Mint Your First NFT
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Assets Tab */}
+              <TabsContent value="assets" className="space-y-6">
+                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Wallet className="w-5 h-5" />
+                      Wallet Assets ({tokenBalances.length + 1})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Native GOR Balance */}
+                      <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">GOR</span>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-slate-900 dark:text-slate-100">Gorbchain Native</h4>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">GOR</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-mono text-slate-900 dark:text-slate-100">
+                            {balance.toFixed(4)} GOR
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Token Balances */}
+                      {tokenBalances.map((token) => (
+                        <div key={token.mint} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                              {token.logo ? (
+                                <Image
+                                  src={token.logo}
+                                  alt={token.symbol || 'Token'}
+                                  width={40}
+                                  height={40}
+                                  className="w-full h-full rounded-lg object-cover"
+                                />
+                              ) : (
+                                <Coins className="w-5 h-5 text-white" />
+                              )}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                                {token.name || token.symbol || `Token-${token.mint.slice(0, 4)}`}
+                              </h4>
+                              <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">
+                                {token.symbol || formatAddress(token.mint)}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-mono text-slate-900 dark:text-slate-100">
+                              {parseFloat(token.uiAmountString).toLocaleString()}
+                            </div>
+                            <div className="text-xs text-slate-600 dark:text-slate-400">
+                              {token.decimals} decimals
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      {tokenBalances.length === 0 && (
+                        <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                          <Wallet className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                          <p>No additional tokens found in your wallet</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}

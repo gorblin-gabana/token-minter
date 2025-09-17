@@ -159,7 +159,7 @@ export function WalletDropdown() {
             </Button>
           </div>
           
-          <div className="space-y-1 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+          <div className="space-y-1 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 scrollbar-track-transparent hover:scrollbar-thumb-slate-400 dark:hover:scrollbar-thumb-slate-500 transition-colors">
                          {tokenLoading ? (
                <div className="text-xs text-gray-500 dark:!text-gray-300 text-center py-4">
                  <div className="flex items-center justify-center gap-2">

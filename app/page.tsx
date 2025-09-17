@@ -27,8 +27,17 @@ import {
   Shield,
   Clock,
   Users,
+  ArrowRight,
+  Play,
+  Flame,
+  Crown,
+  Target,
+  Layers,
+  Globe,
+  ChevronRight,
 } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { toast } from "@/hooks/use-toast"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
@@ -43,6 +52,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
 import { createToken } from "@/lib/store/slices/tokenSlice"
 import { createNFT } from "@/lib/store/slices/nftSlice"
 import { fetchPlatformStats } from "@/lib/store/slices/statsSlice"
+import { Navigation } from "@/components/navigation"
 
 export default function GorbaganaLaunchpad() {
   const { theme, setTheme } = useTheme()
@@ -55,7 +65,7 @@ export default function GorbaganaLaunchpad() {
   // Redux hooks
   const dispatch = useAppDispatch()
   const { currentUser, isAuthenticated } = useUser()
-  const { platformStats } = useAppSelector((state) => state.stats)
+  const { platformStats } = useAppSelector((state: any) => state.stats || { platformStats: null })
 
   // Token form state
   const [tokenForm, setTokenForm] = useState({
@@ -360,461 +370,249 @@ export default function GorbaganaLaunchpad() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="w-full max-w-none px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-green-400 to-green-600 p-1">
-                <Image
-                  src="https://www.gorbchain.xyz/images/logo.png"
-                  alt="Gorb Logo"
-                  width={40}
-                  height={40}
-                  className="object-cover w-full h-full rounded-lg"
-                  onError={(e:any) => {
-                    e.currentTarget.src = "/goblin-mascot.png"
-                  }}
-                />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">GorbPad</h1>
-                <p className="text-sm text-muted-foreground">Token & NFT Launchpad</p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50/30 to-emerald-50/50 dark:from-slate-900 dark:via-green-950/20 dark:to-emerald-950/30">
+      <Navigation />
 
-            <div className="flex items-center gap-3">
-              <ThemeToggle />
-              {connected ? (
-                <WalletDropdown />
-              ) : (
-                <WalletMultiButton className="!bg-gradient-to-r !from-blue-600 !to-indigo-600 hover:!from-blue-700 hover:!to-indigo-700 !rounded-2xl !border-2 !border-blue-200 dark:!border-blue-800 !px-6 !py-3 !text-sm !font-medium !text-white !shadow-lg hover:!shadow-xl !transition-all !duration-200 hover:!scale-[1.02]" />
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="w-full max-w-none px-4 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-blue-700">Total Tokens</p>
-                  <p className="text-3xl font-bold text-blue-900">
-                    {platformStats?.totalTokens || 0}
-                  </p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                  <Coins className="w-6 h-6 text-blue-700" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-purple-700">Total NFTs</p>
-                  <p className="text-3xl font-bold text-purple-900">
-                    {platformStats?.totalNFTs || 0}
-                  </p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                  <Gem className="w-6 h-6 text-purple-700" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-50 to-green-100  border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-green-700">Network TVL</p>
-                  <p className="text-3xl font-bold text-green-900">
-                    ${platformStats?.networkTVL || 0}
-                  </p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-green-700" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-orange-700">Active Users</p>
-                  <p className="text-3xl font-bold text-orange-900">
-                    {platformStats?.totalUsers || 0}
-                  </p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-orange-700" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Hero Section */}
+      <main className="relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-green-300/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-emerald-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-green-200/10 to-emerald-200/10 rounded-full blur-3xl"></div>
         </div>
 
-
-
-        {/* Transaction Result */}
-        <AnimatePresence>
-          {lastTransaction && (
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center max-w-6xl mx-auto">
+            {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mb-8"
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border border-green-200 dark:border-green-800 mb-8"
             >
-              <Card className="bg-gradient-to-r from-green-50 to-emerald-50  border-0">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <CheckCircle className="w-6 h-6 text-green-700" />
-                    <div className="flex-1">
-                      <p className="font-semibold text-green-900">
-                        {lastTransaction.type === "token" ? "🚀 Token Created Successfully!" : "🎨 NFT Minted Successfully!"}
-                      </p>
-                      <div className="flex flex-col gap-3 mt-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-green-700">Transaction:</span>
-                          <span className="text-sm text-green-600 font-mono">{lastTransaction.signature.slice(0, 12)}...</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => copyToClipboard(lastTransaction.signature)}
-                            className="w-6 h-6 p-0 hover:bg-green-500/20 rounded"
-                          >
-                            <Copy className="w-3 h-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => window.open(`https://gorbscan.com/tx/${lastTransaction.signature}`, '_blank')}
-                            className="w-6 h-6 p-0 hover:bg-green-500/20 rounded"
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                          </Button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-green-700">{lastTransaction.type === "token" ? "Token Address:" : "NFT Address:"}:</span>
-                          <span className="text-sm text-green-600 font-mono">{lastTransaction.address.slice(0, 12)}...</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => copyToClipboard(lastTransaction.address)}
-                            className="w-6 h-6 p-0 hover:bg-green-500/20 rounded"
-                          >
-                            <Copy className="w-3 h-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => window.open(`https://gorbscan.com/token/${lastTransaction.address}`, '_blank')}
-                            className="w-6 h-6 p-0 hover:bg-green-500/20 rounded"
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <Flame className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                The #1 Token & NFT Launchpad on Gorbchain
+              </span>
             </motion.div>
-          )}
-        </AnimatePresence>
 
-        {/* Main Launchpad */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Token Launch Panel */}
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0">
-            <CardHeader className="pb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                  <Rocket className="w-6 h-6 text-blue-700" />
-                </div>
-                <div>
-                  <CardTitle className="text-xl text-blue-900">Token Launch</CardTitle>
-                  <CardDescription className="text-blue-700">Create your own token on Gorbchain</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="token-name" className="text-sm font-medium text-gray-700">Token Name *</Label>
-                  <Input
-                    id="token-name"
-                    placeholder="e.g., Gorb Token"
-                    value={tokenForm.name}
-                    onChange={(e) => setTokenForm({ ...tokenForm, name: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="token-symbol" className="text-sm font-medium text-gray-700">Symbol *</Label>
-                  <Input
-                    id="token-symbol"
-                    placeholder="e.g., GORB"
-                    value={tokenForm.symbol}
-                    onChange={(e) => setTokenForm({ ...tokenForm, symbol: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
-                  />
-                </div>
-              </div>
+            {/* Main Heading */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-5xl md:text-7xl font-bold mb-6"
+            >
+              <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                Launch Your
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+                Crypto Dreams
+              </span>
+            </motion.h1>
 
-              <div className="space-y-2">
-                <Label htmlFor="token-image" className="text-sm font-medium text-gray-700">Image URL</Label>
-                <Input
-                  id="token-image"
-                  placeholder="https://example.com/token-image.png"
-                  value={tokenForm.uri}
-                  onChange={(e) => setTokenForm({ ...tokenForm, uri: e.target.value })}
-                  className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
-                />
-              </div>
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+            >
+              Create tokens and NFTs on Gorbchain with zero coding required. 
+              <span className="font-semibold text-green-600 dark:text-green-400"> Lightning fast</span>, 
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400"> secure</span>, and 
+              <span className="font-semibold text-teal-600 dark:text-teal-400"> user-friendly</span>.
+            </motion.p>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="token-supply" className="text-sm font-medium text-gray-700">Initial Supply *</Label>
-                  <Input
-                    id="token-supply"
-                    type="number"
-                    placeholder="1000000"
-                    value={tokenForm.supply}
-                    onChange={(e) => setTokenForm({ ...tokenForm, supply: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
-                  />
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            >
+              {connected ? (
+                <div className="flex gap-4">
+                  <Link href="/tokens">
+                    <Button size="lg" className="h-14 px-8 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-2xl hover:shadow-green-500/25 transition-all duration-300 hover:scale-105">
+                      <Rocket className="w-5 h-5 mr-2" />
+                      Launch Token
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
+                  <Link href="/nfts">
+                    <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-2 border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-950/20 transition-all duration-300 hover:scale-105">
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Mint NFT
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="token-decimals" className="text-sm font-medium text-gray-700">Decimals</Label>
-                  <Input
-                    id="token-decimals"
-                    type="number"
-                    placeholder="9"
-                    value={tokenForm.decimals}
-                    onChange={(e) => setTokenForm({ ...tokenForm, decimals: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50  focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="token-freeze" className="text-sm font-medium text-gray-700">Freeze Authority (optional)</Label>
-                <Input
-                  id="token-freeze"
-                  placeholder="Solana public key (optional)"
-                  value={tokenForm.freezeAuthority}
-                  onChange={(e) => {
-                    setTokenForm({ ...tokenForm, freezeAuthority: e.target.value })
-                    setTokenFreezeAuthorityError(null)
-                  }}
-                  className={`rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 ${tokenFreezeAuthorityError ? 'ring-2 ring-red-500' : ''}`}
-                />
-                {tokenFreezeAuthorityError && (
-                  <p className="text-xs text-red-600 mt-1">{tokenFreezeAuthorityError}</p>
-                )}
-                <p className="text-xs text-gray-500">If provided, must be a valid Solana public key. Leave blank to disable freeze authority.</p>
-              </div>
-
-              <Button
-                onClick={handleTokenLaunch}
-                disabled={!connected || isLoading}
-                className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold"
-              >
-                {isLoading ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
-                    />
-                    Launching...
-                  </>
-                ) : (
-                  <>
-                    <Zap className="w-5 h-5 mr-2" />
-                    Launch Token
-                  </>
-                )}
-              </Button>
-
-              {!connected && (
-                <p className="text-center text-sm text-gray-600">Connect your wallet to launch tokens</p>
+              ) : (
+                <WalletMultiButton className="!h-14 !px-8 !text-lg !bg-gradient-to-r !from-green-600 !to-emerald-600 hover:!from-green-700 hover:!to-emerald-700 !rounded-2xl !border-0 !text-white !shadow-2xl hover:!shadow-green-500/25 !transition-all !duration-300 hover:!scale-105" />
               )}
-            </CardContent>
-          </Card>
+            </motion.div>
 
-          {/* NFT Launch Panel */}
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-0">
-            <CardHeader className="pb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                  <Star className="w-6 h-6 text-purple-700" />
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+            >
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
+                  {platformStats?.totalTokens || 0}
                 </div>
-                <div>
-                  <CardTitle className="text-xl text-purple-900">NFT Launch</CardTitle>
-                  <CardDescription className="text-purple-700">Mint unique NFTs on Gorbchain</CardDescription>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Tokens Launched</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">
+                  {platformStats?.totalNFTs || 0}
                 </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">NFTs Minted</div>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nft-name" className="text-sm font-medium text-gray-700">NFT Name *</Label>
-                  <Input
-                    id="nft-name"
-                    placeholder="e.g., Gorb Genesis"
-                    value={nftForm.name}
-                    onChange={(e) => setNftForm({ ...nftForm, name: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
-                  />
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-teal-600 dark:text-teal-400 mb-2">
+                  {platformStats?.totalUsers || 0}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="nft-symbol" className="text-sm font-medium text-gray-700">Symbol *</Label>
-                  <Input
-                    id="nft-symbol"
-                    placeholder="e.g., GGEN"
-                    value={nftForm.symbol}
-                    onChange={(e) => setNftForm({ ...nftForm, symbol: e.target.value })}
-                    className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
-                  />
+                <div className="text-sm text-slate-600 dark:text-slate-400">Active Users</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-slate-600 dark:text-slate-400 mb-2">
+                  $0
                 </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Total Volume</div>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="nft-image" className="text-sm font-medium text-gray-700">Image/Metadata URL *</Label>
-                <Input
-                  id="nft-image"
-                  placeholder="https://example.com/nft-metadata.json"
-                  value={nftForm.uri}
-                  onChange={(e) => setNftForm({ ...nftForm, uri: e.target.value })}
-                  className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="nft-description" className="text-sm font-medium text-gray-700">Description *</Label>
-                <Textarea
-                  id="nft-description"
-                  placeholder="Describe your NFT collection..."
-                  value={nftForm.description}
-                  onChange={(e) => setNftForm({ ...nftForm, description: e.target.value })}
-                  className="rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 min-h-[100px] resize-none placeholder:text-gray-500 text-gray-900"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="nft-freeze" className="text-sm font-medium text-gray-700">Freeze Authority (optional)</Label>
-                <Input
-                  id="nft-freeze"
-                  placeholder="Solana public key (optional)"
-                  value={nftForm.freezeAuthority}
-                  onChange={(e) => {
-                    setNftForm({ ...nftForm, freezeAuthority: e.target.value })
-                    setFreezeAuthorityError(null)
-                  }}
-                  className={`rounded-xl border-0 bg-white/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900 ${freezeAuthorityError ? 'ring-2 ring-red-500' : ''}`}
-                />
-                {freezeAuthorityError && (
-                  <p className="text-xs text-red-600 mt-1">{freezeAuthorityError}</p>
-                )}
-                <p className="text-xs text-gray-500">If provided, must be a valid Solana public key. Leave blank to disable freeze authority.</p>
-              </div>
-
-              <div className="bg-white/30 p-4 rounded-xl">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Royalty Fee</p>
-                    <p className="text-xs text-gray-600">Fixed at 5% for all NFTs</p>
-                  </div>
-                  <Badge className="bg-purple-500/20 text-purple-700 border-0">5%</Badge>
-                </div>
-              </div>
-
-              <Button
-                onClick={handleNFTLaunch}
-                disabled={!connected || isLoading}
-                className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold"
-              >
-                {isLoading ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
-                    />
-                    Minting...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    Mint NFT
-                  </>
-                )}
-              </Button>
-
-              {!connected && (
-                <p className="text-center text-sm text-gray-600">Connect your wallet to mint NFTs</p>
-              )}
-            </CardContent>
-          </Card>
+            </motion.div>
+          </div>
         </div>
 
         {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-green-700" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-green-900">Secure</h3>
-                  <p className="text-sm text-green-700">Enterprise-grade security</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center mb-16">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-4xl md:text-5xl font-bold mb-6"
+            >
+              Why Choose <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">GorbPad</span>?
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto"
+            >
+              Built for the next generation of creators, developers, and crypto enthusiasts
+            </motion.p>
+          </div>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-orange-700" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-orange-900">Fast</h3>
-                  <p className="text-sm text-orange-700">Lightning-fast transactions</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-blue-700" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-blue-900">24/7</h3>
-                  <p className="text-sm text-blue-700">Always available</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Zap,
+                title: "Lightning Fast",
+                description: "Deploy tokens and NFTs in seconds with our optimized smart contracts",
+                color: "from-yellow-400 to-orange-500"
+              },
+              {
+                icon: Shield,
+                title: "Enterprise Security",
+                description: "Built on Gorbchain with military-grade security and audit-ready code",
+                color: "from-green-400 to-emerald-500"
+              },
+              {
+                icon: Globe,
+                title: "Zero Coding",
+                description: "No technical knowledge required. Launch with just a few clicks",
+                color: "from-blue-400 to-cyan-500"
+              },
+              {
+                icon: Crown,
+                title: "Premium Features",
+                description: "Advanced metadata, royalty settings, and custom configurations",
+                color: "from-purple-400 to-pink-500"
+              },
+              {
+                icon: Target,
+                title: "User Friendly",
+                description: "Intuitive interface designed for both beginners and experts",
+                color: "from-indigo-400 to-purple-500"
+              },
+              {
+                icon: Layers,
+                title: "Full Control",
+                description: "Complete ownership of your tokens and NFTs with full metadata",
+                color: "from-teal-400 to-green-500"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="group"
+              >
+                <Card className="h-full border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                  <CardContent className="p-8 text-center">
+                    <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                      <feature.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-4 text-slate-900 dark:text-slate-100">
+                      {feature.title}
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
+
+        {/* CTA Section */}
+        <div className="container mx-auto px-4 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl p-12 md:p-16 text-white relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-green-600/90 to-emerald-600/90"></div>
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Launch?
+              </h2>
+              <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                Join thousands of creators who have already launched their tokens and NFTs on Gorbchain
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/tokens">
+                  <Button size="lg" variant="secondary" className="h-14 px-8 text-lg bg-white text-green-600 hover:bg-green-50 shadow-2xl hover:shadow-white/25 transition-all duration-300 hover:scale-105">
+                    <Rocket className="w-5 h-5 mr-2" />
+                    Start Creating
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/top-users">
+                  <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-2 border-white/30 text-white hover:bg-white/10 transition-all duration-300 hover:scale-105">
+                    <Crown className="w-5 h-5 mr-2" />
+                    View Leaders
+                    <ChevronRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+
+
       </main>
     </div>
   )

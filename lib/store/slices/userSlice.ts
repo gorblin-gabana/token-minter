@@ -17,6 +17,19 @@ export interface User {
 
 export interface UserState {
   currentUser: User | null
+  topUsers: Array<{
+    _id: string
+    walletAddress: string
+    createdAt: string
+    totalTokensLaunched: number
+    totalNftsLaunched: number
+    totalLaunches: number
+    profile?: {
+      username?: string
+      bio?: string
+      avatar?: string
+    }
+  }>
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
@@ -24,6 +37,7 @@ export interface UserState {
 
 const initialState: UserState = {
   currentUser: null,
+  topUsers: [],
   isAuthenticated: false,
   isLoading: false,
   error: null
@@ -74,6 +88,25 @@ export const updateUserProfile = createAsyncThunk(
 
       const data = await response.json()
       return data
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : 'Unknown error')
+    }
+  }
+)
+
+export const fetchTopUsers = createAsyncThunk(
+  'user/fetchTopUsers',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/users/top')
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return rejectWithValue(errorData.message || 'Failed to fetch top users')
+      }
+
+      const data = await response.json()
+      return data.users
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Unknown error')
     }
@@ -137,6 +170,20 @@ const userSlice = createSlice({
         state.error = null
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload as string
+      })
+      // Fetch Top Users
+      .addCase(fetchTopUsers.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(fetchTopUsers.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.topUsers = action.payload
+        state.error = null
+      })
+      .addCase(fetchTopUsers.rejected, (state, action) => {
         state.isLoading = false
         state.error = action.payload as string
       })
