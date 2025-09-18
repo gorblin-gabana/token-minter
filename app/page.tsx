@@ -120,6 +120,28 @@ export default function GorbaganaLaunchpad() {
       return
     }
 
+    // Validate supply - must be positive integer
+    const supply = parseInt(tokenForm.supply)
+    if (isNaN(supply) || supply <= 0 || !Number.isInteger(supply)) {
+      toast({
+        title: "Invalid Supply",
+        description: "Supply must be a positive whole number",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Validate decimals - must be between 0 and 9
+    const decimals = parseInt(tokenForm.decimals)
+    if (isNaN(decimals) || decimals < 0 || decimals > 9 || !Number.isInteger(decimals)) {
+      toast({
+        title: "Invalid Decimals",
+        description: "Decimals must be a whole number between 0 and 9",
+        variant: "destructive",
+      })
+      return
+    }
+
     // Validate freeze authority if provided
     let freezeAuthorityPubkey: import("@solana/web3.js").PublicKey | null = null
     if (tokenForm.freezeAuthority) {
@@ -152,8 +174,8 @@ export default function GorbaganaLaunchpad() {
         wallet: wallet.adapter,
         name: tokenForm.name,
         symbol: tokenForm.symbol,
-        supply: tokenForm.supply,
-        decimals: Number.parseInt(tokenForm.decimals),
+        supply: supply.toString(),
+        decimals: decimals,
         uri: tokenForm.uri,
         freezeAuth: freezeAuthorityPubkey ? freezeAuthorityPubkey : null,
       })
@@ -171,8 +193,8 @@ export default function GorbaganaLaunchpad() {
             mintAddress: result.tokenAddress,
             name: tokenForm.name,
             symbol: tokenForm.symbol,
-            supply: tokenForm.supply,
-            decimals: Number.parseInt(tokenForm.decimals),
+            supply: supply.toString(),
+            decimals: decimals,
             uri: tokenForm.uri || undefined,
             freezeAuthority: freezeAuthorityPubkey?.toBase58() || undefined,
             mintAuthority: publicKey?.toBase58() || '',
@@ -742,10 +764,18 @@ export default function GorbaganaLaunchpad() {
                   <Input
                     id="token-supply"
                     type="number"
+                    min="1"
+                    step="1"
                     placeholder="1000000"
                     value={tokenForm.supply}
-                    onChange={(e) => setTokenForm({ ...tokenForm, supply: e.target.value })}
-                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
+                    onChange={(e) => {
+                      const value = e.target.value
+                      // Only allow positive integers
+                      if (value === '' || (Number.isInteger(Number(value)) && Number(value) > 0)) {
+                        setTokenForm({ ...tokenForm, supply: value })
+                      }
+                    }}
+                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
                   />
                 </div>
                 <div className="space-y-2">
@@ -753,10 +783,19 @@ export default function GorbaganaLaunchpad() {
                   <Input
                     id="token-decimals"
                     type="number"
+                    min="0"
+                    max="9"
+                    step="1"
                     placeholder="9"
                     value={tokenForm.decimals}
-                    onChange={(e) => setTokenForm({ ...tokenForm, decimals: e.target.value })}
-                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
+                    onChange={(e) => {
+                      const value = e.target.value
+                      // Only allow integers between 0 and 9
+                      if (value === '' || (Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 9)) {
+                        setTokenForm({ ...tokenForm, decimals: value })
+                      }
+                    }}
+                    className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>

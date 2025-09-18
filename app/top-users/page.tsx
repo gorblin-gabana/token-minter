@@ -237,7 +237,7 @@ export default function TopUsersPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                              {user.profile?.username || `User ${index + 1}`}
+                              {user.username || `User ${index + 1}`}
                             </h3>
                             {getRankBadge(index + 1)}
                           </div>

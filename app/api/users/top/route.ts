@@ -48,7 +48,9 @@ export async function GET(req: NextRequest) {
           totalTokensLaunched: 1,
           totalNftsLaunched: 1,
           totalLaunches: 1,
-          profile: 1
+          username: 1,
+          bio: 1,
+          avatar: 1
         }
       }
     ]);

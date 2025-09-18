@@ -5,15 +5,14 @@ export interface IUser extends Document {
   isNewUser: boolean
   createdAt: Date
   lastLoginAt: Date
+  updatedAt: Date
   tokensLaunched: mongoose.Types.ObjectId[]
   nftsLaunched: mongoose.Types.ObjectId[]
   totalTokensLaunched: number
   totalNftsLaunched: number
-  profile?: {
-    username?: string
-    bio?: string
-    avatar?: string
-  }
+  username?: string
+  bio?: string
+  avatar?: string
 }
 
 const UserSchema = new Schema<IUser>({
@@ -51,10 +50,24 @@ const UserSchema = new Schema<IUser>({
     type: Number,
     default: 0
   },
-  profile: {
-    username: String,
-    bio: String,
-    avatar: String
+  username: {
+    type: String,
+    unique: true,
+    sparse: true,
+    lowercase: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 20,
+    match: /^[a-zA-Z0-9_]+$/
+  },
+  bio: {
+    type: String,
+    maxlength: 200,
+    trim: true
+  },
+  avatar: {
+    type: String,
+    trim: true
   }
 }, {
   timestamps: true

@@ -29,6 +29,7 @@ import { toast } from "@/hooks/use-toast"
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
 import { fetchUserTokens } from "@/lib/store/slices/tokenSlice"
 import { fetchUserNFTs as fetchUserNFTsAction } from "@/lib/store/slices/nftSlice"
+import { updateProfile, setUser } from "@/lib/store/slices/userSlice"
 import { Navigation } from "@/components/navigation"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useWalletBalance } from "@/hooks/use-wallet-balance"
@@ -50,20 +51,18 @@ export default function ProfilePage() {
     avatar: ""
   })
 
+  // Initialize profile data from current user
   useEffect(() => {
-    if (currentUser && isAuthenticated) {
-      // Load user's tokens and NFTs
-      dispatch(fetchUserTokens(currentUser._id!))
-      dispatch(fetchUserNFTsAction(currentUser._id!))
-      
-      // Set profile data
+    if (currentUser) {
+      // console.log(`currentUser--->`, currentUser)
       setProfileData({
-        username: currentUser.profile?.username || "",
-        bio: currentUser.profile?.bio || "",
-        avatar: currentUser.profile?.avatar || ""
+        username: currentUser.username || "",
+        bio: currentUser.bio || "",
+        avatar: currentUser.avatar || ""
       })
     }
-  }, [currentUser, isAuthenticated, dispatch])
+  }, [currentUser])
+
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -85,13 +84,45 @@ export default function ProfilePage() {
     })
   }
 
-  const handleSaveProfile = () => {
-    // TODO: Implement profile update
-    setIsEditing(false)
-    toast({
-      title: "Profile Updated",
-      description: "Your profile has been updated successfully",
-    })
+  const handleSaveProfile = async () => {
+    if (!currentUser) return
+    // console.log(`currentUser`, currentUser,profileData)
+
+    try {
+      const response = await fetch(`/api/users/${currentUser._id}/update`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profileData),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update profile')
+      }
+
+      // Update the current user in Redux store
+      dispatch(updateProfile({
+        username: result.user.username,
+        bio: result.user.bio,
+        avatar: result.user.avatar,
+      }))
+
+      setIsEditing(false)
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been updated successfully",
+      })
+    } catch (error: any) {
+      console.error('Error updating profile:', error)
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update profile. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
 
   if (!isAuthenticated || !currentUser) {

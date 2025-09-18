@@ -2,17 +2,16 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 export interface User {
   _id?: string
+  id?: string
   walletAddress: string
   isNewUser: boolean
   createdAt: string
   lastLoginAt: string
   totalTokensLaunched: number
   totalNftsLaunched: number
-  profile?: {
-    username?: string
-    bio?: string
-    avatar?: string
-  }
+  username?: string
+  bio?: string
+  avatar?: string
 }
 
 export interface UserState {
@@ -24,11 +23,9 @@ export interface UserState {
     totalTokensLaunched: number
     totalNftsLaunched: number
     totalLaunches: number
-    profile?: {
-      username?: string
-      bio?: string
-      avatar?: string
-    }
+    username?: string
+    bio?: string
+    avatar?: string
   }>
   isAuthenticated: boolean
   isLoading: boolean
@@ -138,6 +135,19 @@ const userSlice = createSlice({
           state.currentUser.totalNftsLaunched = action.payload.nftsLaunched
         }
       }
+    },
+    updateProfile: (state, action: PayloadAction<{ username?: string; bio?: string; avatar?: string }>) => {
+      if (state.currentUser) {
+        if (action.payload.username !== undefined) {
+          state.currentUser.username = action.payload.username
+        }
+        if (action.payload.bio !== undefined) {
+          state.currentUser.bio = action.payload.bio
+        }
+        if (action.payload.avatar !== undefined) {
+          state.currentUser.avatar = action.payload.avatar
+        }
+      }
     }
   },
   extraReducers: (builder) => {
@@ -149,7 +159,12 @@ const userSlice = createSlice({
       })
       .addCase(createOrLoginUser.fulfilled, (state, action) => {
         state.isLoading = false
-        state.currentUser = action.payload.user
+        state.currentUser = {
+          ...action.payload.user,
+          username: action.payload.user.username || undefined,
+          bio: action.payload.user.bio || undefined,
+          avatar: action.payload.user.avatar || undefined
+        }
         state.isAuthenticated = true
         state.error = null
       })
@@ -190,5 +205,5 @@ const userSlice = createSlice({
   }
 })
 
-export const { setUser, clearUser, clearError, updateUserStats } = userSlice.actions
+export const { setUser, clearUser, clearError, updateUserStats, updateProfile } = userSlice.actions
 export default userSlice.reducer

@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
           lastLoginAt: user.lastLoginAt,
           totalTokensLaunched: user.totalTokensLaunched,
           totalNftsLaunched: user.totalNftsLaunched,
-          profile: user.profile
+          username: user.username,
+          bio: user.bio,
+          avatar: user.avatar
         },
         isNewUser: false,
         message: 'Welcome back!'
@@ -57,7 +59,9 @@ export async function POST(request: NextRequest) {
           lastLoginAt: newUser.lastLoginAt,
           totalTokensLaunched: newUser.totalTokensLaunched,
           totalNftsLaunched: newUser.totalNftsLaunched,
-          profile: newUser.profile
+          username: newUser.username,
+          bio: newUser.bio,
+          avatar: newUser.avatar
         },
         isNewUser: true,
         message: 'Welcome to GorbPad! 🎉'
