@@ -99,25 +99,25 @@ export function Navigation() {
           </div>
 
           {/* Right side - Wallet & Theme */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <ThemeToggle />
               {connected ? (
                 <WalletDropdown />
               ) : (
-                <WalletMultiButton className="!h-10 !px-6 !text-sm !bg-gradient-to-r !from-green-500 !to-purple-600 hover:!from-green-600 hover:!to-purple-700 !rounded-xl !border-0 !text-white !shadow-lg hover:!shadow-green-500/25 !transition-all !duration-300 hover:!scale-105 !font-medium" />
+                <WalletMultiButton className="!h-9 sm:!h-10 !px-4 sm:!px-6 !text-xs sm:!text-sm !bg-gradient-to-r !from-green-500 !to-purple-600 hover:!from-green-600 hover:!to-purple-700 !rounded-xl !border-0 !text-white !shadow-lg hover:!shadow-green-500/25 !transition-all !duration-300 hover:!scale-105 !font-medium" />
               )}
             
             {/* Mobile menu button */}
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="md:hidden !h-9 !w-9 !p-0"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Menu className="h-4 w-4" />
               )}
             </Button>
           </div>

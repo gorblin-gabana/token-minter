@@ -199,7 +199,7 @@ export default function NFTsPage() {
 
         {/* NFTs Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 6 }).map((_, index) => (
               <Card key={index} className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
                 <CardContent className="p-6">
@@ -215,7 +215,7 @@ export default function NFTsPage() {
           </div>
         ) : nfts.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
               {nfts.map((nft, index) => (
                 <motion.div
                   key={nft._id}
@@ -226,13 +226,11 @@ export default function NFTsPage() {
                   <Card className="group border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
                     <CardContent className="p-0">
                       {/* NFT Image */}
-                      <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 flex items-center justify-center">
+                      <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 flex items-center justify-center overflow-hidden">
                         {nft.uri ? (
-                          <Image
+                          <img
                             src={nft.uri}
                             alt={nft.name}
-                            width={200}
-                            height={200}
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none'
@@ -240,7 +238,7 @@ export default function NFTsPage() {
                             }}
                           />
                         ) : null}
-                        <div className="absolute inset-0 flex items-center justify-center">
+                        <div className={`absolute inset-0 flex items-center justify-center ${nft.uri ? 'hidden' : ''}`}>
                           <Gem className="w-16 h-16 text-purple-400" />
                         </div>
                         <div className="absolute top-4 right-4">

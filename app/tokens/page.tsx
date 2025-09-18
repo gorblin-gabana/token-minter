@@ -197,7 +197,7 @@ export default function TokensPage() {
 
         {/* Tokens Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 6 }).map((_, index) => (
               <Card key={index} className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
                 <CardContent className="p-6">
@@ -212,7 +212,7 @@ export default function TokensPage() {
           </div>
         ) : tokens.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
               {tokens.map((token, index) => (
                 <motion.div
                   key={token._id}
@@ -224,19 +224,30 @@ export default function TokensPage() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                            <Coins className="w-6 h-6 text-white" />
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center overflow-hidden">
+                            {token.uri ? (
+                              <img 
+                                src={token.uri} 
+                                alt={token.name} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                  e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                                }}
+                              />
+                            ) : null}
+                            <Coins className={`w-6 h-6 text-white ${token.uri ? 'hidden' : ''}`} />
                           </div>
-                          <div>
-                            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg truncate">
                               {token.name}
                             </h3>
-                            <p className="text-slate-600 dark:text-slate-400 font-mono">
+                            <p className="text-slate-600 dark:text-slate-400 font-mono text-sm truncate">
                               {token.symbol}
                             </p>
                           </div>
                         </div>
-                        <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                        <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 flex-shrink-0">
                           Token22
                         </Badge>
                       </div>
