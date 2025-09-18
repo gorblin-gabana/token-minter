@@ -63,6 +63,13 @@ export default function ProfilePage() {
     }
   }, [currentUser])
 
+  useEffect(() => {
+    if (currentUser && isAuthenticated) {
+      // Load user's tokens and NFTs
+      dispatch(fetchUserTokens(currentUser._id!))
+      dispatch(fetchUserNFTsAction(currentUser._id!))
+    }
+  }, [currentUser, isAuthenticated, dispatch])
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -82,6 +89,58 @@ export default function ProfilePage() {
       month: 'short',
       day: 'numeric'
     })
+  }
+
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  // Combine and sort recent activity (tokens and NFTs)
+  const getRecentActivity = () => {
+    const activities: Array<{
+      id: string
+      type: 'token' | 'nft'
+      name: string
+      symbol: string
+      uri?: string
+      createdAt: string
+      mintAddress: string
+    }> = []
+    
+    // Add tokens
+    userTokens.forEach((token: any) => {
+      activities.push({
+        id: token._id,
+        type: 'token',
+        name: token.name,
+        symbol: token.symbol,
+        uri: token.uri,
+        createdAt: token.createdAt,
+        mintAddress: token.mintAddress
+      })
+    })
+    
+    // Add NFTs
+    userNfts.forEach((nft: any) => {
+      activities.push({
+        id: nft._id,
+        type: 'nft',
+        name: nft.name,
+        symbol: nft.symbol,
+        uri: nft.uri,
+        createdAt: nft.createdAt,
+        mintAddress: nft.mintAddress
+      })
+    })
+    
+    // Sort by creation date (newest first)
+    return activities.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 10)
   }
 
   const handleSaveProfile = async () => {
@@ -352,10 +411,62 @@ export default function ProfilePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center py-8 text-slate-600 dark:text-slate-400">
-                      <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p>No recent activity to show</p>
-                    </div>
+                    {getRecentActivity().length > 0 ? (
+                      <div className="space-y-4">
+                        {getRecentActivity().map((activity: any) => (
+                          <div key={activity.id} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800/70 transition-colors">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center overflow-hidden flex-shrink-0">
+                              {activity.uri ? (
+                                <img 
+                                  src={activity.uri} 
+                                  alt={activity.name} 
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none'
+                                    e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                                  }}
+                                />
+                              ) : null}
+                              {activity.type === 'token' ? (
+                                <Coins className={`w-4 h-4 text-white ${activity.uri ? 'hidden' : ''}`} />
+                              ) : (
+                                <Gem className={`w-4 h-4 text-white ${activity.uri ? 'hidden' : ''}`} />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
+                                  {activity.name}
+                                </h4>
+                                <Badge variant="secondary" className="text-xs">
+                                  {activity.type === 'token' ? 'Token' : 'NFT'}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-slate-600 dark:text-slate-400 font-mono truncate">
+                                {activity.symbol}
+                              </p>
+                              <p className="text-xs text-slate-500 dark:text-slate-500">
+                                {formatDateTime(activity.createdAt)}
+                              </p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => window.open(`https://gorbscan.com/token/${activity.mintAddress}`, '_blank')}
+                              className="flex-shrink-0"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                        <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p>No recent activity to show</p>
+                        <p className="text-sm mt-2">Launch your first token or NFT to see activity here!</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -375,8 +486,19 @@ export default function ProfilePage() {
                         {userTokens.map((token: any) => (
                           <div key={token._id} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                                <Coins className="w-5 h-5 text-white" />
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center overflow-hidden">
+                                {token.uri ? (
+                                  <img 
+                                    src={token.uri} 
+                                    alt={token.name} 
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none'
+                                      e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                                    }}
+                                  />
+                                ) : null}
+                                <Coins className={`w-5 h-5 text-white ${token.uri ? 'hidden' : ''}`} />
                               </div>
                               <div>
                                 <h4 className="font-semibold text-slate-900 dark:text-slate-100">{token.name}</h4>
@@ -427,8 +549,19 @@ export default function ProfilePage() {
                         {userNfts.map((nft: any) => (
                           <div key={nft._id} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                                <Gem className="w-5 h-5 text-white" />
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
+                                {nft.uri ? (
+                                  <img 
+                                    src={nft.uri} 
+                                    alt={nft.name} 
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none'
+                                      e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                                    }}
+                                  />
+                                ) : null}
+                                <Gem className={`w-5 h-5 text-white ${nft.uri ? 'hidden' : ''}`} />
                               </div>
                               <div>
                                 <h4 className="font-semibold text-slate-900 dark:text-slate-100">{nft.name}</h4>
@@ -495,7 +628,7 @@ export default function ProfilePage() {
 
                       {/* Token Balances */}
                       {tokenBalances.map((token) => (
-                        <div key={token.mint} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                        <div onClick={() => window.open(`https://gorbscan.com/token/${token.mint}`, '_blank')} key={token.mint} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
                               {token.logo ? (

@@ -4,12 +4,12 @@ import Token from '@/lib/models/Token'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     await connectDB()
     
-    const { userId } = params
+    const { userId } = await params
     
     const tokens = await Token.find({ creator: userId })
       .populate('creator', 'walletAddress profile')
