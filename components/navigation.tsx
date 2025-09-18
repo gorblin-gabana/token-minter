@@ -39,12 +39,12 @@ export function Navigation() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 p-1 group-hover:scale-105 transition-transform duration-200">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 p-1 group-hover:scale-105 transition-transform duration-200">
                 <Image
                   src="https://www.gorbchain.xyz/images/logo.png"
                   alt="Gorb Logo"

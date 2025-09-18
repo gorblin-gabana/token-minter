@@ -27,8 +27,10 @@ import {
   UserCircle
 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 export function WalletDropdown() {
+  const router = useRouter()
   const { publicKey, disconnect, connected } = useWallet()
   const { balance } = useWalletBalance()
   const { tokenBalances, loading: tokenLoading, refetch } = useTokenBalances()
@@ -96,22 +98,6 @@ export function WalletDropdown() {
         align="end"
         sideOffset={8}
       >
-                 {/* Wallet Info Header */}
-         <div className="p-4 border-b text-black border-gray-100 dark:border-gray-700">
-           <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
-               <Wallet className="w-5 h-5 text-white" />
-             </div>
-             <div className="flex-1">
-               <div className="text-sm font-medium text-gray-900 dark:!text-white">
-                 Connected Wallet
-               </div>
-               <div className="text-xs text-gray-500 dark:!text-gray-300 font-mono">
-                 {formatAddress(publicKey.toBase58())}
-               </div>
-             </div>
-           </div>
-         </div>
 
                  {/* SOL Balance */}
          <div className="p-3">
@@ -171,7 +157,7 @@ export function WalletDropdown() {
                </div>
              ) : tokenBalances.length > 0 ? (
                tokenBalances.map((token) => (
-                 <Card key={token.mint} className="rounded-lg border-0 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                 <Card onClick={() => window.open(`https://gorbscan.com/token/${token.mint}`, '_blank')} key={token.mint} className="rounded-lg border-0 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                    <CardContent className="p-3">
                      <div className="flex items-center justify-between">
                        <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -251,7 +237,10 @@ export function WalletDropdown() {
            </DropdownMenuItem>
 
            <DropdownMenuItem 
-             onClick={() => window.open('/profile', '_self')}
+             onClick={() => {
+              router.push('/profile')
+              setIsOpen(false)
+            }}
              className="rounded-xl cursor-pointer flex items-center gap-3 p-3 text-black text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 dark:!text-white"
            >
              <UserCircle className="w-4 h-4" />

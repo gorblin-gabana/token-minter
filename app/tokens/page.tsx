@@ -101,7 +101,6 @@ export default function TokensPage() {
             <Link href="/">
               <Button variant="ghost" size="sm" className="gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                Back to Home
               </Button>
             </Link>
             <div className="flex items-center gap-3">
