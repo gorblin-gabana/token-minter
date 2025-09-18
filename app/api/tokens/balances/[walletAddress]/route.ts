@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { walletAddress: string } }
+  { params }: { params: Promise<{ walletAddress: string }> }
 ) {
   try {
-    const { walletAddress } = params
+    const { walletAddress } = await params
     
     if (!walletAddress) {
       return NextResponse.json(
@@ -32,25 +32,33 @@ export async function GET(
     const tokenBalances = await response.json()
     
     // Transform the data to match our expected format
-    const transformedBalances = tokenBalances.map((token: any) => ({
-      mint: token.mintAddress || token.mint,
-      amount: token.tokenAmount?.amount || '0',
-      decimals: token.tokenAmount?.decimals || 0,
-      uiAmount: token.tokenAmount?.uiAmount || 0,
-      uiAmountString: token.tokenAmount?.uiAmountString || '0',
-      symbol: token.symbol || token.metadata?.tokenMetadata?.symbol || `TOKEN-${token.mintAddress?.slice(0, 4) || 'UNK'}`,
-      name: token.name || token.metadata?.tokenMetadata?.name || `Token ${token.mintAddress?.slice(0, 8) || 'Unknown'}...`,
-      logo: token.uri || token.metadata?.tokenMetadata?.uri,
-      isFrozen: token.isFrozen || false,
-      isInitialized: token.isInitialized || false,
-      programId: token.programId,
-      supply: token.supply,
-      mintAuthority: token.mintAuthority,
-      freezeAuthority: token.freezeAuthority,
-      updateAuthority: token.updateAuthority,
-      createdAt: token.createdAt,
-      lastUpdated: token.lastUpdated
-    }))
+    const transformedBalances = tokenBalances.map((token: any) => {
+      // Filter out invalid metadata URLs
+      let logo = token.uri || token.metadata?.tokenMetadata?.uri
+      if (logo && (logo.includes('gorbtracker.app') || !logo.startsWith('http'))) {
+        logo = undefined
+      }
+
+      return {
+        mint: token.mintAddress || token.mint,
+        amount: token.tokenAmount?.amount || '0',
+        decimals: token.tokenAmount?.decimals || 0,
+        uiAmount: token.tokenAmount?.uiAmount || 0,
+        uiAmountString: token.tokenAmount?.uiAmountString || '0',
+        symbol: token.symbol || token.metadata?.tokenMetadata?.symbol || `TOKEN-${token.mintAddress?.slice(0, 4) || 'UNK'}`,
+        name: token.name || token.metadata?.tokenMetadata?.name || `Token ${token.mintAddress?.slice(0, 8) || 'Unknown'}...`,
+        logo: logo,
+        isFrozen: token.isFrozen || false,
+        isInitialized: token.isInitialized || false,
+        programId: token.programId,
+        supply: token.supply,
+        mintAuthority: token.mintAuthority,
+        freezeAuthority: token.freezeAuthority,
+        updateAuthority: token.updateAuthority,
+        createdAt: token.createdAt,
+        lastUpdated: token.lastUpdated
+      }
+    })
 
     return NextResponse.json({
       balances: transformedBalances,

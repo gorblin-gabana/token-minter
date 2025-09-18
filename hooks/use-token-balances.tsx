@@ -36,7 +36,7 @@ export function useTokenBalances() {
     }
 
     fetchTokenBalances()
-  }, [connected, publicKey])
+  }, [connected, publicKey?.toBase58()])
 
   const fetchTokenBalances = async () => {
     if (!publicKey) return
