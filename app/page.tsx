@@ -88,6 +88,13 @@ export default function GorbaganaLaunchpad() {
   })
   const [freezeAuthorityError, setFreezeAuthorityError] = useState<string | null>(null)
 
+  // Active form state
+  const [activeForm, setActiveForm] = useState<'token' | 'nft'>('token')
+
+  // Image preview states
+  const [tokenImagePreview, setTokenImagePreview] = useState<string | null>(null)
+  const [nftImagePreview, setNftImagePreview] = useState<string | null>(null)
+
   // Transaction results
   const [lastTransaction, setLastTransaction] = useState<{
     type: "token" | "nft"
@@ -592,32 +599,85 @@ export default function GorbaganaLaunchpad() {
             transition={{ duration: 0.8 }}
             className="text-center mb-12"
           >
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-100 to-purple-100 dark:from-green-900/30 dark:to-purple-900/30 border border-green-200 dark:border-green-800 mb-6">
+              <Sparkles className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                🚀 Ready to Launch? Choose Your Asset Type
+              </span>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                Launch Your Assets
+              <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-purple-600 bg-clip-text text-transparent">
+                Create & Launch
               </span>
             </h2>
             <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-              Create tokens and NFTs directly on this page. No need to navigate elsewhere!
+              Choose between creating a token or minting an NFT. Both are just a few clicks away!
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {/* Token Launch Panel */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <Card className="h-full border-0 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 backdrop-blur-sm">
-                <CardHeader className="pb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                      <Rocket className="w-6 h-6 text-blue-700" />
+          {/* Toggle Switch */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex justify-center mb-12"
+          >
+            <div className="relative bg-slate-100 dark:bg-slate-800 rounded-2xl p-2 shadow-inner">
+              <div className="flex">
+                <button
+                  onClick={() => setActiveForm('token')}
+                  className={`relative z-10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                    activeForm === 'token'
+                      ? 'text-white shadow-lg'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Rocket className="w-5 h-5" />
+                    <span>Token Launch</span>
+                  </div>
+                </button>
+                <button
+                  onClick={() => setActiveForm('nft')}
+                  className={`relative z-10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                    activeForm === 'nft'
+                      ? 'text-white shadow-lg'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Gem className="w-5 h-5" />
+                    <span>NFT Mint</span>
+                  </div>
+                </button>
+              </div>
+              <div
+                className={`absolute top-2 bottom-2 w-1/2 rounded-xl bg-gradient-to-r transition-all duration-300 ${
+                  activeForm === 'token'
+                    ? 'from-green-500 to-emerald-600 left-2'
+                    : 'from-purple-500 to-pink-600 right-2'
+                }`}
+              />
+            </div>
+          </motion.div>
+
+          <motion.div
+            key={activeForm}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-2xl mx-auto"
+          >
+            {activeForm === 'token' ? (
+              <Card className="border-0 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-900/20 dark:via-emerald-900/20 dark:to-teal-900/20 backdrop-blur-sm shadow-2xl">
+                <CardHeader className="pb-6 text-center">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                      <Rocket className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-blue-900 dark:text-blue-100">Token Launch</CardTitle>
-                      <CardDescription className="text-blue-700 dark:text-blue-300">Create your own token on Gorbchain</CardDescription>
+                      <CardTitle className="text-2xl text-green-900 dark:text-green-100">🚀 Token Launch</CardTitle>
+                      <CardDescription className="text-green-700 dark:text-green-300 text-lg">Create your own token on Gorbchain</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -630,7 +690,7 @@ export default function GorbaganaLaunchpad() {
                         placeholder="e.g., Gorb Token"
                         value={tokenForm.name}
                         onChange={(e) => setTokenForm({ ...tokenForm, name: e.target.value })}
-                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
+                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
                       />
                     </div>
                     <div className="space-y-2">
@@ -640,20 +700,39 @@ export default function GorbaganaLaunchpad() {
                         placeholder="e.g., GORB"
                         value={tokenForm.symbol}
                         onChange={(e) => setTokenForm({ ...tokenForm, symbol: e.target.value })}
-                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
+                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="token-image" className="text-sm font-medium text-gray-700 dark:text-gray-300">Image URL</Label>
-                    <Input
-                      id="token-image"
-                      placeholder="https://example.com/token-image.png"
-                      value={tokenForm.uri}
-                      onChange={(e) => setTokenForm({ ...tokenForm, uri: e.target.value })}
-                      className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="token-image"
+                        placeholder="https://example.com/token-image.png"
+                        value={tokenForm.uri}
+                        onChange={(e) => {
+                          setTokenForm({ ...tokenForm, uri: e.target.value })
+                          if (e.target.value) {
+                            setTokenImagePreview(e.target.value)
+                          } else {
+                            setTokenImagePreview(null)
+                          }
+                        }}
+                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white pr-12"
+                      />
+                      {tokenImagePreview && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-lg overflow-hidden border-2 border-green-200 dark:border-green-800">
+                          <img
+                            src={tokenImagePreview}
+                            alt="Token preview"
+                            className="w-full h-full object-cover"
+                            onError={() => setTokenImagePreview(null)}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -665,7 +744,7 @@ export default function GorbaganaLaunchpad() {
                         placeholder="1000000"
                         value={tokenForm.supply}
                         onChange={(e) => setTokenForm({ ...tokenForm, supply: e.target.value })}
-                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
+                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
                       />
                     </div>
                     <div className="space-y-2">
@@ -676,7 +755,7 @@ export default function GorbaganaLaunchpad() {
                         placeholder="9"
                         value={tokenForm.decimals}
                         onChange={(e) => setTokenForm({ ...tokenForm, decimals: e.target.value })}
-                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
+                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
                       />
                     </div>
                   </div>
@@ -691,7 +770,7 @@ export default function GorbaganaLaunchpad() {
                         setTokenForm({ ...tokenForm, freezeAuthority: e.target.value })
                         setTokenFreezeAuthorityError(null)
                       }}
-                      className={`rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-blue-500 placeholder:text-gray-500 text-gray-900 dark:text-white ${tokenFreezeAuthorityError ? 'ring-2 ring-red-500' : ''}`}
+                      className={`rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-green-500 placeholder:text-gray-500 text-gray-900 dark:text-white ${tokenFreezeAuthorityError ? 'ring-2 ring-red-500' : ''}`}
                     />
                     {tokenFreezeAuthorityError && (
                       <p className="text-xs text-red-600 mt-1">{tokenFreezeAuthorityError}</p>
@@ -702,7 +781,7 @@ export default function GorbaganaLaunchpad() {
                   <Button
                     onClick={handleTokenLaunch}
                     disabled={!connected || isLoading}
-                    className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold"
+                    className="w-full h-14 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-lg shadow-lg hover:shadow-green-500/25 transition-all duration-300 hover:scale-105"
                   >
                     {isLoading ? (
                       <>
@@ -726,23 +805,16 @@ export default function GorbaganaLaunchpad() {
                   )}
                 </CardContent>
               </Card>
-            </motion.div>
-
-            {/* NFT Launch Panel */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <Card className="h-full border-0 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 backdrop-blur-sm">
-                <CardHeader className="pb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                      <Star className="w-6 h-6 text-purple-700" />
+            ) : (
+              <Card className="border-0 bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-rose-900/20 backdrop-blur-sm shadow-2xl">
+                <CardHeader className="pb-6 text-center">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+                      <Gem className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-purple-900 dark:text-purple-100">NFT Launch</CardTitle>
-                      <CardDescription className="text-purple-700 dark:text-purple-300">Mint unique NFTs on Gorbchain</CardDescription>
+                      <CardTitle className="text-2xl text-purple-900 dark:text-purple-100">💎 NFT Mint</CardTitle>
+                      <CardDescription className="text-purple-700 dark:text-purple-300 text-lg">Mint unique NFTs on Gorbchain</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -772,13 +844,32 @@ export default function GorbaganaLaunchpad() {
 
                   <div className="space-y-2">
                     <Label htmlFor="nft-image" className="text-sm font-medium text-gray-700 dark:text-gray-300">Image/Metadata URL *</Label>
-                    <Input
-                      id="nft-image"
-                      placeholder="https://example.com/nft-metadata.json"
-                      value={nftForm.uri}
-                      onChange={(e) => setNftForm({ ...nftForm, uri: e.target.value })}
-                      className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900 dark:text-white"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="nft-image"
+                        placeholder="https://example.com/nft-metadata.json"
+                        value={nftForm.uri}
+                        onChange={(e) => {
+                          setNftForm({ ...nftForm, uri: e.target.value })
+                          if (e.target.value) {
+                            setNftImagePreview(e.target.value)
+                          } else {
+                            setNftImagePreview(null)
+                          }
+                        }}
+                        className="rounded-xl border-0 bg-white/50 dark:bg-slate-800/50 focus-visible:ring-2 focus-visible:ring-purple-500 placeholder:text-gray-500 text-gray-900 dark:text-white pr-12"
+                      />
+                      {nftImagePreview && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-lg overflow-hidden border-2 border-purple-200 dark:border-purple-800">
+                          <img
+                            src={nftImagePreview}
+                            alt="NFT preview"
+                            className="w-full h-full object-cover"
+                            onError={() => setNftImagePreview(null)}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -823,7 +914,7 @@ export default function GorbaganaLaunchpad() {
                   <Button
                     onClick={handleNFTLaunch}
                     disabled={!connected || isLoading}
-                    className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold"
+                    className="w-full h-14 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold text-lg shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105"
                   >
                     {isLoading ? (
                       <>
@@ -847,8 +938,8 @@ export default function GorbaganaLaunchpad() {
                   )}
                 </CardContent>
               </Card>
-            </motion.div>
-          </div>
+            )}
+          </motion.div>
         </div>
 
         {/* CTA Section */}

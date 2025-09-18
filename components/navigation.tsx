@@ -20,11 +20,14 @@ import Image from "next/image"
 import { WalletDropdown } from "@/components/wallet-dropdown"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useAppSelector } from "@/lib/store/hooks"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const { platformStats } = useAppSelector((state) => state.stats)
+  const { connected } = useWallet()
 
   const navigation = [
     { name: "Tokens", href: "/tokens", icon: Coins, count: platformStats?.totalTokens },
@@ -96,9 +99,13 @@ export function Navigation() {
           </div>
 
           {/* Right side - Wallet & Theme */}
-          <div className="flex items-center space-x-3">
-            <ThemeToggle />
-            <WalletDropdown />
+            <div className="flex items-center space-x-3">
+              <ThemeToggle />
+              {connected ? (
+                <WalletDropdown />
+              ) : (
+                <WalletMultiButton className="!h-10 !px-6 !text-sm !bg-gradient-to-r !from-green-500 !to-purple-600 hover:!from-green-600 hover:!to-purple-700 !rounded-xl !border-0 !text-white !shadow-lg hover:!shadow-green-500/25 !transition-all !duration-300 hover:!scale-105 !font-medium" />
+              )}
             
             {/* Mobile menu button */}
             <Button

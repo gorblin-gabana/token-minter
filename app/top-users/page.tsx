@@ -81,19 +81,19 @@ export default function TopUsersPage() {
 
   const getRankBadge = (rank: number) => {
     switch (rank) {
-      case 1:
-        return <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0">#1 Champion</Badge>
-      case 2:
-        return <Badge className="bg-gradient-to-r from-gray-300 to-gray-500 text-white border-0">#2 Runner-up</Badge>
-      case 3:
-        return <Badge className="bg-gradient-to-r from-amber-500 to-amber-700 text-white border-0">#3 Third Place</Badge>
+        case 1:
+          return <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0">#1 Champion</Badge>
+        case 2:
+          return <Badge className="bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0">#2 Runner-up</Badge>
+        case 3:
+          return <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0">#3 Third Place</Badge>
       default:
         return <Badge variant="secondary">#{rank}</Badge>
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-yellow-50/30 to-orange-50/50 dark:from-slate-900 dark:via-yellow-950/20 dark:to-orange-950/30">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50/30 to-purple-50/50 dark:from-slate-900 dark:via-green-950/20 dark:to-purple-950/30">
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
@@ -106,10 +106,10 @@ export default function TopUsersPage() {
                 Back to Home
               </Button>
             </Link>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-white" />
-              </div>
+             <div className="flex items-center gap-3">
+               <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-green-500 to-purple-600 flex items-center justify-center">
+                 <Trophy className="w-6 h-6 text-white" />
+               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
                   Top Users
@@ -155,9 +155,9 @@ export default function TopUsersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Launches</p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                    {topUsers.reduce((sum, user) => sum + user.totalLaunches, 0)}
-                  </p>
+                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                      {topUsers.reduce((sum: number, user: any) => sum + user.totalLaunches, 0)}
+                    </p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-green-500" />
               </div>
@@ -173,7 +173,7 @@ export default function TopUsersPage() {
                     {topUsers[0]?.totalLaunches || 0}
                   </p>
                 </div>
-                <Crown className="w-8 h-8 text-yellow-500" />
+                 <Crown className="w-8 h-8 text-green-500" />
               </div>
             </CardContent>
           </Card>
@@ -183,9 +183,9 @@ export default function TopUsersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Avg. Launches</p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                    {topUsers.length > 0 ? Math.round(topUsers.reduce((sum, user) => sum + user.totalLaunches, 0) / topUsers.length) : 0}
-                  </p>
+                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                      {topUsers.length > 0 ? Math.round(topUsers.reduce((sum: number, user: any) => sum + user.totalLaunches, 0) / topUsers.length) : 0}
+                    </p>
                 </div>
                 <Zap className="w-8 h-8 text-purple-500" />
               </div>
@@ -215,19 +215,19 @@ export default function TopUsersPage() {
           </div>
         ) : topUsers.length > 0 ? (
           <div className="space-y-4">
-            {topUsers.map((user, index) => (
+             {topUsers.map((user: any, index: number) => (
               <motion.div
                 key={user._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className={`border-0 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
-                  index === 0 ? 'bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 ring-2 ring-yellow-200 dark:ring-yellow-800' :
-                  index === 1 ? 'bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20 ring-2 ring-gray-200 dark:ring-gray-700' :
-                  index === 2 ? 'bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 ring-2 ring-amber-200 dark:ring-amber-800' :
-                  'bg-white/50 dark:bg-slate-800/50'
-                }`}>
+                 <Card className={`border-0 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
+                   index === 0 ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 ring-2 ring-green-200 dark:ring-green-800' :
+                   index === 1 ? 'bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 ring-2 ring-purple-200 dark:ring-purple-800' :
+                   index === 2 ? 'bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 ring-2 ring-blue-200 dark:ring-blue-800' :
+                   'bg-white/50 dark:bg-slate-800/50'
+                 }`}>
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
@@ -290,12 +290,12 @@ export default function TopUsersPage() {
                           <span>{user.totalLaunches} launches</span>
                         </div>
                         <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${
-                              index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
-                              index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-600' :
-                              'bg-gradient-to-r from-amber-500 to-amber-700'
-                            }`}
+                           <div 
+                             className={`h-2 rounded-full ${
+                               index === 0 ? 'bg-gradient-to-r from-green-500 to-emerald-600' :
+                               index === 1 ? 'bg-gradient-to-r from-purple-500 to-pink-600' :
+                               'bg-gradient-to-r from-blue-500 to-indigo-600'
+                             }`}
                             style={{ 
                               width: `${Math.min(100, (user.totalLaunches / Math.max(topUsers[0]?.totalLaunches || 1, 1)) * 100)}%` 
                             }}
@@ -330,7 +330,7 @@ export default function TopUsersPage() {
 
         {/* Call to Action */}
         <div className="mt-12">
-          <Card className="border-0 bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+           <Card className="border-0 bg-gradient-to-r from-green-500 to-purple-600 text-white">
             <CardContent className="p-8 text-center">
               <Crown className="w-16 h-16 mx-auto mb-4" />
               <h2 className="text-3xl font-bold mb-4">
@@ -340,18 +340,28 @@ export default function TopUsersPage() {
                 Start launching tokens and NFTs to climb the ranks and become a top creator!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/tokens">
-                  <Button size="lg" variant="secondary" className="bg-white text-yellow-600 hover:bg-yellow-50">
-                    <Coins className="w-5 h-5 mr-2" />
-                    Launch Tokens
-                  </Button>
-                </Link>
-                <Link href="/nfts">
-                  <Button size="lg" variant="outline" className="border-2 border-white/30 text-white hover:bg-white/10">
-                    <Gem className="w-5 h-5 mr-2" />
-                    Mint NFTs
-                  </Button>
-                </Link>
+                 <Button 
+                   size="lg" 
+                   variant="secondary" 
+                   className="bg-white text-green-600 hover:bg-green-50"
+                   onClick={() => {
+                     window.location.href = '/#launchpad'
+                   }}
+                 >
+                   <Coins className="w-5 h-5 mr-2" />
+                   Launch Tokens
+                 </Button>
+                 <Button 
+                   size="lg" 
+                   variant="outline" 
+                   className="border-2 border-white/30 text-white hover:bg-white/10"
+                   onClick={() => {
+                     window.location.href = '/#launchpad'
+                   }}
+                 >
+                   <Gem className="w-5 h-5 mr-2" />
+                   Mint NFTs
+                 </Button>
               </div>
             </CardContent>
           </Card>
