@@ -18,7 +18,6 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { WalletDropdown } from "@/components/wallet-dropdown"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { useAppSelector } from "@/lib/store/hooks"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
