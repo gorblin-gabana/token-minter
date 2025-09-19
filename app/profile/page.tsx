@@ -186,20 +186,29 @@ export default function ProfilePage() {
 
   if (!isAuthenticated || !currentUser) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-blue-950/20 dark:to-indigo-950/30">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-indigo-900/20 relative overflow-hidden">
         <Navigation />
-        <main className="container mx-auto px-4 py-20">
-          <Card className="max-w-md mx-auto border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+        
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-0 w-full h-full">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          </div>
+        </div>
+        
+        <main className="container mx-auto px-4 py-20 relative z-10">
+          <Card className="max-w-md mx-auto bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50">
             <CardContent className="p-12 text-center">
               <User className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              <h2 className="text-2xl font-bold text-white mb-4">
                 Please Connect Your Wallet
               </h2>
-              <p className="text-slate-600 dark:text-slate-400 mb-6">
+              <p className="text-slate-300 mb-6">
                 Connect your wallet to view your profile and assets
               </p>
               <Link href="/">
-                <Button className="gap-2">
+                <Button className="gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white">
                   <Wallet className="w-4 h-4" />
                   Go to Home
                 </Button>
@@ -212,28 +221,36 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-blue-950/20 dark:to-indigo-950/30">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-indigo-900/20 relative overflow-hidden">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-8">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+      </div>
+      
+      <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2">
+            {/* <Link href="/">
+              <Button variant="ghost" size="sm" className="gap-2 text-slate-300 hover:text-white hover:bg-slate-800/50">
                 <ArrowLeft className="w-4 h-4" />
               
               </Button>
-            </Link>
+            </Link> */}
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
                 <User className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+                <h1 className="text-3xl font-bold text-white">
                   My Profile
                 </h1>
-                <p className="text-slate-600 dark:text-slate-400">
+                <p className="text-slate-300">
                   Manage your assets and profile information
                 </p>
               </div>
@@ -244,7 +261,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Card */}
           <div className="lg:col-span-1">
-            <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm sticky top-24">
+            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm sticky top-24 border border-slate-700/50">
               <CardContent className="p-6">
                 <div className="text-center mb-6">
                   <div className="relative inline-block mb-4">
@@ -280,7 +297,7 @@ export default function ProfilePage() {
                           placeholder="Username"
                           value={profileData.username}
                           onChange={(e) => setProfileData({ ...profileData, username: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                          className="w-full px-3 py-2 rounded-lg border border-slate-600/50 bg-slate-700/50 text-white"
                         />
                       </div>
                       <div>
@@ -288,7 +305,7 @@ export default function ProfilePage() {
                           placeholder="Bio"
                           value={profileData.bio}
                           onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 resize-none"
+                          className="w-full px-3 py-2 rounded-lg border border-slate-600/50 bg-slate-700/50 text-white resize-none"
                           rows={3}
                         />
                       </div>
@@ -304,10 +321,10 @@ export default function ProfilePage() {
                     </div>
                   ) : (
                     <div>
-                      <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                      <h2 className="text-xl font-bold text-white mb-2">
                         {profileData.username || "Anonymous User"}
                       </h2>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
+                      <p className="text-slate-300 text-sm mb-4">
                         {profileData.bio || "No bio yet"}
                       </p>
                       <Button
@@ -325,9 +342,9 @@ export default function ProfilePage() {
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-600 dark:text-slate-400">Wallet Address:</span>
+                    <span className="text-slate-300">Wallet Address:</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-slate-900 dark:text-slate-100">
+                      <span className="font-mono text-white">
                         {formatAddress(currentUser.walletAddress)}
                       </span>
                       <Button
@@ -342,15 +359,15 @@ export default function ProfilePage() {
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-600 dark:text-slate-400">GOR Balance:</span>
-                    <span className="font-mono text-slate-900 dark:text-slate-100">
+                    <span className="text-slate-300">GOR Balance:</span>
+                    <span className="font-mono text-white">
                       {balance.toFixed(4)} GOR
                     </span>
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-600 dark:text-slate-400">Member Since:</span>
-                    <span className="text-slate-900 dark:text-slate-100">
+                    <span className="text-slate-300">Member Since:</span>
+                    <span className="text-white">
                       {formatDate(currentUser.createdAt)}
                     </span>
                   </div>
@@ -362,7 +379,7 @@ export default function ProfilePage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+              <TabsList className="grid w-full grid-cols-4 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="tokens">Tokens</TabsTrigger>
                 <TabsTrigger value="nfts">NFTs</TabsTrigger>
@@ -372,38 +389,38 @@ export default function ProfilePage() {
               {/* Overview Tab */}
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                  <Card className="border-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                     <CardContent className="p-6 text-center">
                       <Coins className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                      <div className="text-2xl font-bold text-white">
                         {currentUser.totalTokensLaunched}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Tokens Launched</div>
+                      <div className="text-sm text-slate-300">Tokens Launched</div>
                     </CardContent>
                   </Card>
                   
-                  <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                  <Card className="border-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                     <CardContent className="p-6 text-center">
                       <Gem className="w-8 h-8 text-purple-500 mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                      <div className="text-2xl font-bold text-white">
                         {currentUser.totalNftsLaunched}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">NFTs Minted</div>
+                      <div className="text-sm text-slate-300">NFTs Minted</div>
                     </CardContent>
                   </Card>
                   
-                  <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                  <Card className="border-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                     <CardContent className="p-6 text-center">
                       <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                      <div className="text-2xl font-bold text-white">
                         {currentUser.totalTokensLaunched + currentUser.totalNftsLaunched}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Total Launches</div>
+                      <div className="text-sm text-slate-300">Total Launches</div>
                     </CardContent>
                   </Card>
                 </div>
 
-                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                <Card className="border-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Activity className="w-5 h-5" />
@@ -435,14 +452,14 @@ export default function ProfilePage() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <h4 className="font-semibold text-slate-900 dark:text-slate-100 truncate">
+                                <h4 className="font-semibold text-white truncate">
                                   {activity.name}
                                 </h4>
                                 <Badge variant="secondary" className="text-xs">
                                   {activity.type === 'token' ? 'Token' : 'NFT'}
                                 </Badge>
                               </div>
-                              <p className="text-sm text-slate-600 dark:text-slate-400 font-mono truncate">
+                              <p className="text-sm text-slate-300 font-mono truncate">
                                 {activity.symbol}
                               </p>
                               <p className="text-xs text-slate-500 dark:text-slate-500">
@@ -461,7 +478,7 @@ export default function ProfilePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                      <div className="text-center py-8 text-slate-300">
                         <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p>No recent activity to show</p>
                         <p className="text-sm mt-2">Launch your first token or NFT to see activity here!</p>
@@ -473,7 +490,7 @@ export default function ProfilePage() {
 
               {/* Tokens Tab */}
               <TabsContent value="tokens" className="space-y-6">
-                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                <Card className="border-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Coins className="w-5 h-5" />
@@ -501,8 +518,8 @@ export default function ProfilePage() {
                                 <Coins className={`w-5 h-5 text-white ${token.uri ? 'hidden' : ''}`} />
                               </div>
                               <div>
-                                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{token.name}</h4>
-                                <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">{token.symbol}</p>
+                                <h4 className="font-semibold text-white">{token.name}</h4>
+                                <p className="text-sm text-slate-300 font-mono">{token.symbol}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
@@ -519,7 +536,7 @@ export default function ProfilePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                      <div className="text-center py-8 text-slate-300">
                         <Coins className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p>No tokens launched yet</p>
                         <Link href="/">
@@ -536,7 +553,7 @@ export default function ProfilePage() {
 
               {/* NFTs Tab */}
               <TabsContent value="nfts" className="space-y-6">
-                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                <Card className="border-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Gem className="w-5 h-5" />
@@ -549,7 +566,7 @@ export default function ProfilePage() {
                         {userNfts.map((nft: any) => (
                           <div key={nft._id} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-purple-500 flex items-center justify-center overflow-hidden">
                                 {nft.uri ? (
                                   <img 
                                     src={nft.uri} 
@@ -564,8 +581,8 @@ export default function ProfilePage() {
                                 <Gem className={`w-5 h-5 text-white ${nft.uri ? 'hidden' : ''}`} />
                               </div>
                               <div>
-                                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{nft.name}</h4>
-                                <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">{nft.symbol}</p>
+                                <h4 className="font-semibold text-white">{nft.name}</h4>
+                                <p className="text-sm text-slate-300 font-mono">{nft.symbol}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
@@ -582,7 +599,7 @@ export default function ProfilePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                      <div className="text-center py-8 text-slate-300">
                         <Gem className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p>No NFTs minted yet</p>
                         <Link href="/">
@@ -599,7 +616,7 @@ export default function ProfilePage() {
 
               {/* Assets Tab */}
               <TabsContent value="assets" className="space-y-6">
-                <Card className="border-0 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                <Card className="border-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Wallet className="w-5 h-5" />
@@ -615,12 +632,12 @@ export default function ProfilePage() {
                             <span className="text-white font-bold text-sm">GOR</span>
                           </div>
                           <div>
-                            <h4 className="font-semibold text-slate-900 dark:text-slate-100">Gorbchain Native</h4>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">GOR</p>
+                            <h4 className="font-semibold text-white">Gorbchain Native</h4>
+                            <p className="text-sm text-slate-300">GOR</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="font-mono text-slate-900 dark:text-slate-100">
+                          <div className="font-mono text-white">
                             {balance.toFixed(4)} GOR
                           </div>
                         </div>
@@ -644,19 +661,19 @@ export default function ProfilePage() {
                               )}
                             </div>
                             <div>
-                              <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                              <h4 className="font-semibold text-white">
                                 {token.name || token.symbol || `Token-${token.mint.slice(0, 4)}`}
                               </h4>
-                              <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">
+                              <p className="text-sm text-slate-300 font-mono">
                                 {token.symbol || formatAddress(token.mint)}
                               </p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-mono text-slate-900 dark:text-slate-100">
+                            <div className="font-mono text-white">
                               {parseFloat(token.uiAmountString).toLocaleString()}
                             </div>
-                            <div className="text-xs text-slate-600 dark:text-slate-400">
+                            <div className="text-xs text-slate-300">
                               {token.decimals} decimals
                             </div>
                           </div>
@@ -664,7 +681,7 @@ export default function ProfilePage() {
                       ))}
 
                       {tokenBalances.length === 0 && (
-                        <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+                        <div className="text-center py-8 text-slate-300">
                           <Wallet className="w-12 h-12 mx-auto mb-4 opacity-50" />
                           <p>No additional tokens found in your wallet</p>
                         </div>

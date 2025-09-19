@@ -100,7 +100,7 @@ export function Navigation() {
 
           {/* Right side - Wallet & Theme */}
             <div className="flex items-center space-x-2 sm:space-x-3">
-              <ThemeToggle />
+              {/* <ThemeToggle /> */}
               {connected ? (
                 <WalletDropdown />
               ) : (
