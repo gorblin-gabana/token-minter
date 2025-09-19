@@ -26,6 +26,7 @@ import { toast } from "@/hooks/use-toast"
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
 import { fetchAllTokens } from "@/lib/store/slices/tokenSlice"
 import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 
 export default function TokensPage() {
   const dispatch = useAppDispatch()
@@ -391,6 +392,8 @@ export default function TokensPage() {
           </Card>
         )}
       </main>
+      
+      <Footer />
     </div>
   )
 }

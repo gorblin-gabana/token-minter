@@ -28,6 +28,7 @@ import { toast } from "@/hooks/use-toast"
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
 import { fetchAllNFTs } from "@/lib/store/slices/nftSlice"
 import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 
 export default function NFTsPage() {
   const dispatch = useAppDispatch()
@@ -404,6 +405,8 @@ export default function NFTsPage() {
           </Card>
         )}
       </main>
+      
+      <Footer />
     </div>
   )
 }

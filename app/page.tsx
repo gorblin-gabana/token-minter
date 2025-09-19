@@ -54,6 +54,8 @@ import { createNFT } from "@/lib/store/slices/nftSlice"
 import { fetchPlatformStats } from "@/lib/store/slices/statsSlice"
 import { Navigation } from "@/components/navigation"
 import { SkeletonLoading } from "@/components/skeleton-loading"
+import { Footer } from "@/components/footer"
+import { MascotThoughtCloud } from "@/components/mascot-thought-cloud"
 
 export default function GorbaganaLaunchpad() {
   const { theme, setTheme } = useTheme()
@@ -515,6 +517,9 @@ export default function GorbaganaLaunchpad() {
               className="flex justify-center lg:justify-end"
             >
               <div className="relative">
+                {/* Thought Cloud */}
+                <MascotThoughtCloud />
+                
                 {/* Mascot Container */}
                 <div className="relative w-96 h-96 lg:w-[28rem] lg:h-[28rem] xl:w-[32rem] xl:h-[32rem]">
                   {/* Glow effect */}
@@ -702,7 +707,7 @@ export default function GorbaganaLaunchpad() {
             className="flex justify-center mb-12"
           >
             <div className="relative bg-slate-800/50 backdrop-blur-sm rounded-2xl p-2 shadow-inner border border-slate-700/50">
-              <div className="flex">
+              <div className="flex relative">
                 <button
                   onClick={() => setActiveForm('token')}
                   className={`relative z-10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 ${
@@ -730,21 +735,34 @@ export default function GorbaganaLaunchpad() {
                   </div>
                 </button>
               </div>
-              <div
-                className={`absolute top-2 bottom-2 w-1/2 rounded-xl bg-gradient-to-r transition-all duration-300 ${
-                  activeForm === 'token'
-                    ? 'from-green-500 to-cyan-500 left-2'
-                    : 'from-purple-500 to-purple-500 right-2'
-                }`}
+              <motion.div
+                className="absolute top-2 bottom-2 w-1/2 rounded-xl bg-gradient-to-r"
+                animate={{
+                  x: activeForm === 'token' ? 0 : '100%',
+                  background: activeForm === 'token' 
+                    ? 'linear-gradient(to right, #10b981, #06b6d4)' 
+                    : 'linear-gradient(to right, #8b5cf6, #8b5cf6)'
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30
+                }}
               />
             </div>
           </motion.div>
 
           <motion.div
             key={activeForm}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ 
+              duration: 0.4,
+              type: "spring",
+              stiffness: 300,
+              damping: 30
+            }}
             className="max-w-2xl mx-auto"
           >
             {activeForm === 'token' ? (
@@ -1079,9 +1097,9 @@ export default function GorbaganaLaunchpad() {
           </motion.div>
         </div> */}
 
-
-
       </main>
+      
+      <Footer />
     </div>
   )
 }

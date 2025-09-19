@@ -25,6 +25,7 @@ import { toast } from "@/hooks/use-toast"
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
 import { fetchTopUsers } from "@/lib/store/slices/userSlice"
 import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 
 export default function TopUsersPage() {
   const dispatch = useAppDispatch()
@@ -375,6 +376,8 @@ export default function TopUsersPage() {
           </Card>
         </div>
       </main>
+      
+      <Footer />
     </div>
   )
 }

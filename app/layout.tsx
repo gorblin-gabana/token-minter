@@ -61,8 +61,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/goblin-mascot.png",
-        width: 1200,
-        height: 630,
+        width: 400,
+        height: 400,
         alt: "Gorb Launchpad - Token & NFT Creation Platform",
         type: "image/png"
       }
@@ -81,9 +81,9 @@ export const metadata: Metadata = {
     canonical: "https://launch.gorbchain.xyz"
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-    shortcut: "/favicon-16x16.png"
+    icon: "/goblin-mascot.png",
+    apple: "/goblin-mascot.png",
+    shortcut: "/goblin-mascot.png"
   },
   manifest: "/site.webmanifest",
   verification: {

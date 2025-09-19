@@ -31,6 +31,7 @@ import { fetchUserTokens } from "@/lib/store/slices/tokenSlice"
 import { fetchUserNFTs as fetchUserNFTsAction } from "@/lib/store/slices/nftSlice"
 import { updateProfile, setUser } from "@/lib/store/slices/userSlice"
 import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useWalletBalance } from "@/hooks/use-wallet-balance"
 import { useTokenBalances } from "@/hooks/use-token-balances"
@@ -694,6 +695,8 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   )
 }
